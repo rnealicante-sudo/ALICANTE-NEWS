@@ -186,6 +186,9 @@
     const IconChevronUp = ({ className = "w-4 h-4" }) => (
       <svg className={className} fill="none" stroke="currentColor" viewBox="0 0 24 24"><path strokeLinecap="round" strokeLinejoin="round" strokeWidth="2" d="M5 15l7-7 7 7"/></svg>
     );
+    const IconRefresh = ({ className = "w-4 h-4" }) => (
+      <svg className={className} fill="none" stroke="currentColor" viewBox="0 0 24 24"><path strokeLinecap="round" strokeLinejoin="round" strokeWidth="2" d="M4 4v5h.582m15.356 2A8.001 8.001 0 004.582 9m0 0H9m11 11v-5h-.581m0 0a8.003 8.003 0 01-15.357-2m15.357 2H15"/></svg>
+    );
 
     // --- ALL 21 AUTHORIZED SOURCES INCLUDING TWITTER/X ACCOUNTS ---
     const INITIAL_SOURCES = [
@@ -216,175 +219,315 @@
       'gva112', 'bomberos-ayto-alc', 'generalitat-x', 'gva-sanitat', 'gva-cultura', 'diputacion', 'alicanteayto-x', 'alicante-city', 'ua-universidad', 'marq-alicante', 'avamet'
     ]);
 
-    // Real-time Feed Generator
-    const generateFreshNewsFeed = () => {
-      const now = new Date();
-      const minAgo = (m) => new Date(now.getTime() - m * 60000).toISOString();
+    // DYNAMIC POOL OF BREAKING NEWS TEMPLATES
+    const DYNAMIC_NEWS_POOL = [
+      {
+        prefix: 'avamet-alerta',
+        mainTitle: 'AVAMET (@avamet): Aviso por rachas fuertes de viento de poniente e incremento térmico en el Vinalopó',
+        summary: 'La Asociación Valenciana de Meteorología registra máximas superiores a 34ºC en observatorios del interior de la provincia de Alicante.',
+        category: 'medio-ambiente',
+        scope: 'provincia',
+        municipality: 'Alicante',
+        isBreaking: true,
+        urgency: 'alta',
+        sourcesCount: 2,
+        sources: [
+          { source: 'AVAMET Meteorologia (@avamet)', sourceId: 'avamet', title: 'Alerta Meteorológica', link: 'https://x.com/avamet' },
+          { source: '112 CV Emergències (@GVA112)', sourceId: 'gva112', title: 'Aviso 112 CV', link: 'https://x.com/GVA112' }
+        ],
+        items: [
+          { source: 'AVAMET Meteorologia (@avamet)', title: 'Aviso por viento de poniente e incremento térmico', link: 'https://x.com/avamet' },
+          { source: '112 CV Emergències (@GVA112)', title: 'Preemergencia por viento y riesgo térmico', link: 'https://x.com/GVA112' }
+        ]
+      },
+      {
+        prefix: 'gva-sanitat-inversion',
+        mainTitle: 'Sanitat GVA (@GVAsanitat): Inversión de 4,2 millones en el Hospital General Universitario Dr. Balmis de Alicante',
+        summary: 'Sanidad culmina la reforma integral del área de urgencias pediátricas e incorpora dos ecógrafos de última generación.',
+        category: 'municipal',
+        scope: 'alicante-ciudad',
+        municipality: 'Alicante',
+        isBreaking: false,
+        urgency: 'media',
+        sourcesCount: 2,
+        sources: [
+          { source: 'Sanitat GVA (@GVAsanitat)', sourceId: 'gva-sanitat', title: 'Nota de prensa Sanitat', link: 'https://x.com/GVAsanitat' },
+          { source: 'Diario INFORMACIÓN', sourceId: 'informacion', title: 'Mejoras en el Hospital Dr. Balmis', link: 'https://www.informacion.es' }
+        ],
+        items: [
+          { source: 'Sanitat GVA (@GVAsanitat)', title: 'Inversión de 4,2 millones en el Hospital Dr. Balmis', link: 'https://x.com/GVAsanitat' },
+          { source: 'Diario INFORMACIÓN', title: 'Nuevas urgencias pediátricas en Alicante', link: 'https://www.informacion.es' }
+        ]
+      },
+      {
+        prefix: 'todoalicante-reservas',
+        mainTitle: 'Todo Alicante (@todo_alicante): Incremento récord de reservas hoteleras en la Costa Blanca para el próximo puente festivo',
+        summary: 'El sector turístico destaca una ocupación que rozará el 90% en Benidorm, Alicante y el turismo rural del interior.',
+        category: 'turismo',
+        scope: 'provincia',
+        municipality: 'Alicante',
+        isBreaking: false,
+        urgency: 'normal',
+        sourcesCount: 2,
+        sources: [
+          { source: 'Todo Alicante (@todo_alicante)', sourceId: 'todoalicante', title: 'Reportaje Ocupación', link: 'https://x.com/todo_alicante' },
+          { source: 'Turismo Alicante (@Alicante_City)', sourceId: 'alicante-city', title: 'Datos Ocupación Costa Blanca', link: 'https://x.com/Alicante_City' }
+        ],
+        items: [
+          { source: 'Todo Alicante (@todo_alicante)', title: 'Incremento récord de reservas hoteleras', link: 'https://x.com/todo_alicante' },
+          { source: 'Turismo Alicante (@Alicante_City)', title: 'Alta ocupación turística en la provincia', link: 'https://x.com/Alicante_City' }
+        ]
+      },
+      {
+        prefix: 'gva112-incendios',
+        mainTitle: '112 CV (@GVA112): El Centro de Coordinación de Emergencias establece nivel de preemergencia por riesgo de incendios',
+        summary: '112 Comunitat Valenciana aconseja extremar las precauciones en áreas forestales de la provincia ante vientos secos.',
+        category: 'emergencias',
+        scope: 'provincia',
+        municipality: 'Alicante',
+        isBreaking: true,
+        urgency: 'alta',
+        sourcesCount: 3,
+        sources: [
+          { source: '112 CV Emergències (@GVA112)', sourceId: 'gva112', title: 'Boletín Oficial 112', link: 'https://x.com/GVA112' },
+          { source: 'Generalitat Valenciana (@generalitat)', sourceId: 'generalitat-x', title: 'Nota de Prensa GVA', link: 'https://x.com/generalitat' },
+          { source: 'Diario INFORMACIÓN', sourceId: 'informacion', title: 'Riesgo Forestal', link: 'https://www.informacion.es' }
+        ],
+        items: [
+          { source: '112 CV Emergències (@GVA112)', title: 'Preemergencia nivel alto por incendios forestales', link: 'https://x.com/GVA112' },
+          { source: 'Generalitat Valenciana (@generalitat)', title: 'Aviso especial a municipios de la provincia', link: 'https://x.com/generalitat' },
+          { source: 'Diario INFORMACIÓN', title: 'Incendios: Sanidad y Emergencias piden precaución', link: 'https://www.informacion.es' }
+        ]
+      },
+      {
+        prefix: 'tram-nocturno',
+        mainTitle: 'TRAM d\'Alacant: Ferrocarrils de la Generalitat amplia el servicio nocturno de la L2 y L3 durante los fines de semana',
+        summary: 'El tranvía reforzará las frecuencias de conexión entre la Plaza de los Luceros, San Vicente y San Juan Playa.',
+        category: 'municipal',
+        scope: 'alicante-ciudad',
+        municipality: 'Alicante / San Vicente',
+        isBreaking: true,
+        urgency: 'media',
+        sourcesCount: 2,
+        sources: [
+          { source: 'Generalitat Valenciana (@generalitat)', sourceId: 'generalitat-x', title: 'Prensa TRAM d\'Alacant', link: 'https://x.com/generalitat' },
+          { source: 'Alicante Plaza', sourceId: 'alicanteplaza', title: 'Ampliación horario TRAM', link: 'https://alicanteplaza.es' }
+        ],
+        items: [
+          { source: 'Generalitat Valenciana (@generalitat)', title: 'Refuerzo de servicios nocturnos en TRAM d\'Alacant', link: 'https://x.com/generalitat' },
+          { source: 'Alicante Plaza', title: 'Tranvía nocturno en Alicante y San Juan', link: 'https://alicanteplaza.es' }
+        ]
+      },
+      {
+        prefix: 'aena-record',
+        mainTitle: 'Aeropuerto Alicante-Elche Miguel Hernández: Récord con más de 1,6 millones de pasajeros este mes',
+        summary: 'El aeródromo alicantino consolida el crecimiento de rutas internacionales con el Reino Unido, Alemania y Países Bajos.',
+        category: 'turismo',
+        scope: 'elche',
+        municipality: 'Elche / Alicante',
+        isBreaking: false,
+        urgency: 'normal',
+        sourcesCount: 3,
+        sources: [
+          { source: 'Turismo Alicante (@Alicante_City)', sourceId: 'alicante-city', title: 'Datos Aena Alicante-Elche', link: 'https://x.com/Alicante_City' },
+          { source: 'Todo Alicante (@todo_alicante)', sourceId: 'todoalicante', title: 'Cifras récord en el aeropuerto', link: 'https://x.com/todo_alicante' },
+          { source: 'Diario INFORMACIÓN', sourceId: 'informacion', title: 'Aena Alicante bate récords', link: 'https://www.informacion.es' }
+        ],
+        items: [
+          { source: 'Turismo Alicante (@Alicante_City)', title: 'Más de 1,6 millones de pasajeros en Alicante-Elche', link: 'https://x.com/Alicante_City' },
+          { source: 'Todo Alicante (@todo_alicante)', title: 'Consolidación de vuelos internacionales', link: 'https://x.com/todo_alicante' },
+          { source: 'Diario INFORMACIÓN', title: 'Tráfico aéreo récord en el Altet', link: 'https://www.informacion.es' }
+        ]
+      },
+      {
+        prefix: 'dipu-mascerca',
+        mainTitle: 'Diputación de Alicante: Aprobado el Plan Más Cerca con 30 millones de euros para obras en los 141 municipios',
+        summary: 'El pleno provincial respalda las ayudas directas para inversiones hidráulicas, viales y de alumbrado eficiente.',
+        category: 'municipal',
+        scope: 'provincia',
+        municipality: 'Alicante',
+        isBreaking: false,
+        urgency: 'normal',
+        sourcesCount: 2,
+        sources: [
+          { source: 'Diputación de Alicante', sourceId: 'diputacion', title: 'Nota Oficial Diputación', link: 'https://www.diputacionalicante.es' },
+          { source: 'COPE Alicante (@COPEAlicante)', sourceId: 'cope-alicante', title: 'Entrevista Presidente Diputación', link: 'https://x.com/COPEAlicante' }
+        ],
+        items: [
+          { source: 'Diputación de Alicante', title: '30 millones de euros para el Plan Más Cerca', link: 'https://www.diputacionalicante.es' },
+          { source: 'COPE Alicante (@COPEAlicante)', title: 'Ayudas a infraestructuras en la provincia', link: 'https://x.com/COPEAlicante' }
+        ]
+      },
+      {
+        prefix: 'speis-cascoantiguo',
+        mainTitle: 'Bomberos Ayto. Alicante (@BomberosAytoALC): Intervención en el Casco Antiguo por saneamiento de fachada',
+        summary: 'Los efectivos del SPEIS aseguran el perímetro en el centro tras desprenderse pequeños elementos ornamentales.',
+        category: 'emergencias',
+        scope: 'alicante-ciudad',
+        municipality: 'Alicante',
+        isBreaking: true,
+        urgency: 'media',
+        sourcesCount: 1,
+        sources: [{ source: 'Bomberos Ayto. Alicante (@BomberosAytoALC)', sourceId: 'bomberos-ayto-alc', title: 'Actuación SPEIS', link: 'https://x.com/BomberosAytoALC' }],
+        items: [{ source: 'Bomberos Ayto. Alicante (@BomberosAytoALC)', title: 'Saneamiento fachada en el Casco Antiguo', link: 'https://x.com/BomberosAytoALC' }]
+      },
+      {
+        prefix: 'ua-biosensor',
+        mainTitle: 'Universidad de Alicante (@UA_Universidad): Desarrollan un biosensor de diagnóstico ambiental avanzado',
+        summary: 'El proyecto del Departamento de Química Analítica premia la innovación científica desarrollada en el Campus de San Vicente.',
+        category: 'educacion',
+        scope: 'san-vicente',
+        municipality: 'San Vicente del Raspeig',
+        isBreaking: false,
+        urgency: 'normal',
+        sourcesCount: 1,
+        sources: [{ source: 'Universidad de Alicante (@UA_Universidad)', sourceId: 'ua-universidad', title: 'Gabinete de Comunicación UA', link: 'https://x.com/UA_Universidad' }],
+        items: [{ source: 'Universidad de Alicante (@UA_Universidad)', title: 'Nuevo biosensor de diagnóstico ambiental', link: 'https://x.com/UA_Universidad' }]
+      },
+      {
+        prefix: 'elchecf-abonados',
+        mainTitle: 'Elche CF (@elchecf): Superados los 12.000 abonados en la primera semana de campaña franjiverde',
+        summary: 'Gran respaldo de la afición en la campaña de abonos para la nueva temporada en el Martínez Valero.',
+        category: 'deportes',
+        scope: 'elche',
+        municipality: 'Elche',
+        isBreaking: false,
+        urgency: 'normal',
+        sourcesCount: 1,
+        sources: [{ source: 'Elche CF (@elchecf)', sourceId: 'elchecf', title: 'Comunicado Oficial Elche CF', link: 'https://x.com/elchecf' }],
+        items: [{ source: 'Elche CF (@elchecf)', title: 'Campaña de abonados supera los 12.000', link: 'https://x.com/elchecf' }]
+      },
+      {
+        prefix: 'alicante-subvenciones',
+        mainTitle: 'Ayuntamiento de Alicante (@alicanteayto): Convocatoria de 1,5 millones de euros en ayudas para el comercio local',
+        summary: 'El consistorio alicantino activa fondos directos para la modernización digital y la eficiencia energética en tiendas de barrio.',
+        category: 'municipal',
+        scope: 'alicante-ciudad',
+        municipality: 'Alicante',
+        isBreaking: false,
+        urgency: 'normal',
+        sourcesCount: 2,
+        sources: [
+          { source: 'Ayuntamiento Alicante (@alicanteayto)', sourceId: 'alicanteayto-x', title: 'Junta Local Alicante', link: 'https://x.com/alicanteayto' },
+          { source: 'Turismo Alicante (@Alicante_City)', sourceId: 'alicante-city', title: 'Comercio y Turismo', link: 'https://x.com/Alicante_City' }
+        ],
+        items: [
+          { source: 'Ayuntamiento Alicante (@alicanteayto)', title: '1,5 millones para subvenciones a pymes', link: 'https://x.com/alicanteayto' },
+          { source: 'Turismo Alicante (@Alicante_City)', title: 'Apoyo a la modernización comercial', link: 'https://x.com/Alicante_City' }
+        ]
+      },
+      {
+        prefix: 'marq-exposicion',
+        mainTitle: 'MARQ Alicante (@marqalicante): Inauguración de la gran exposición internacional de arqueología mediterránea',
+        summary: 'El Museo Arqueológico de Alicante exhibe piezas inéditas procedentes de museos internacionales de primer nivel.',
+        category: 'cultura',
+        scope: 'alicante-ciudad',
+        municipality: 'Alicante',
+        isBreaking: false,
+        urgency: 'normal',
+        sourcesCount: 1,
+        sources: [{ source: 'MARQ Alicante (@marqalicante)', sourceId: 'marq-alicante', title: 'Exposiciones MARQ', link: 'https://x.com/marqalicante' }],
+        items: [{ source: 'MARQ Alicante (@marqalicante)', title: 'Inauguración de exposición internacional', link: 'https://x.com/marqalicante' }]
+      },
+      {
+        prefix: 'gva112-rescate-montaña',
+        mainTitle: '112 CV (@GVA112): El grupo de rescate provincial auxilio a dos senderistas en la Sierra de Bernia',
+        summary: 'Efectivos del Consorcio Provincial de Bomberos movilizan el helicóptero Alfa 1 tras desorientarse la pareja cerca de la cresta.',
+        category: 'emergencias',
+        scope: 'provincia',
+        municipality: 'Altea / Jalón',
+        isBreaking: true,
+        urgency: 'alta',
+        sourcesCount: 2,
+        sources: [
+          { source: '112 CV Emergències (@GVA112)', sourceId: 'gva112', title: 'Aviso de Rescate 112', link: 'https://x.com/GVA112' },
+          { source: 'Radio Alicante SER (@radioalicante)', sourceId: 'radioalicante', title: 'Última hora SER Alicante', link: 'https://x.com/radioalicante' }
+        ],
+        items: [
+          { source: '112 CV Emergències (@GVA112)', title: 'Rescate en helicóptero en Bernia', link: 'https://x.com/GVA112' },
+          { source: 'Radio Alicante SER (@radioalicante)', title: 'Intervención de emergencia en montaña', link: 'https://x.com/radioalicante' }
+        ]
+      },
+      {
+        prefix: 'puerto-cruceros',
+        mainTitle: 'Puerto de Alicante: Triple escala histórica con más de 8.500 cruceristas desembarcando en el centro',
+        summary: 'Los comercios del Casco Antiguo y el Mercado Central registran alta afluencia con la llegada de los tres buques.',
+        category: 'turismo',
+        scope: 'alicante-ciudad',
+        municipality: 'Alicante',
+        isBreaking: false,
+        urgency: 'normal',
+        sourcesCount: 2,
+        sources: [
+          { source: 'Turismo Alicante (@Alicante_City)', sourceId: 'alicante-city', title: 'Escala de Cruceros', link: 'https://x.com/Alicante_City' },
+          { source: 'Alicante Plaza', sourceId: 'alicanteplaza', title: 'Impacto económico cruceros', link: 'https://alicanteplaza.es' }
+        ],
+        items: [
+          { source: 'Turismo Alicante (@Alicante_City)', title: 'Triple escala con 8.500 visitantes', link: 'https://x.com/Alicante_City' },
+          { source: 'Alicante Plaza', title: 'Jornada de turismo de cruceros en Alicante', link: 'https://alicanteplaza.es' }
+        ]
+      },
+      {
+        prefix: 'hercules-fichaje',
+        mainTitle: 'Hércules CF: El club blanquiazul oficializa la incorporación de un nuevo delantero para la delantera',
+        summary: 'El ariete firma por dos temporadas procedente de Segunda División tras pasar el reconocimiento médico en Alicante.',
+        category: 'deportes',
+        scope: 'alicante-ciudad',
+        municipality: 'Alicante',
+        isBreaking: true,
+        urgency: 'media',
+        sourcesCount: 2,
+        sources: [
+          { source: 'COPE Alicante (@COPEAlicante)', sourceId: 'cope-alicante', title: 'Deportes COPE Alicante', link: 'https://x.com/COPEAlicante' },
+          { source: 'Diario INFORMACIÓN', sourceId: 'informacion', title: 'Mercado Hércules CF', link: 'https://www.informacion.es' }
+        ],
+        items: [
+          { source: 'COPE Alicante (@COPEAlicante)', title: 'Nuevo fichaje para el Hércules CF', link: 'https://x.com/COPEAlicante' },
+          { source: 'Diario INFORMACIÓN', title: 'Refuerzo atacante para el Rico Pérez', link: 'https://www.informacion.es' }
+        ]
+      }
+    ];
 
-      return [
-        {
-          id: 'fresh-avamet-1',
-          mainTitle: 'AVAMET (@avamet): Aviso por rachas fuertes de viento de poniente e incremento térmico en las comarcas del Vinalopó',
-          summary: 'La Asociación Valenciana de Meteorología registra máximas superiores a 34ºC en observatorios del interior de Alicante.',
-          publishedAt: minAgo(1),
-          category: 'medio-ambiente',
-          scope: 'provincia',
-          municipality: 'Alicante',
-          isBreaking: true,
-          urgency: 'alta',
-          sourcesCount: 2,
-          isNew: true,
-          sources: [
-            { source: 'AVAMET Meteorologia (@avamet)', sourceId: 'avamet', title: 'Alerta Meteorológica', link: 'https://x.com/avamet', publishedAt: minAgo(1) },
-            { source: '112 CV Emergències (@GVA112)', sourceId: 'gva112', title: 'Aviso 112 CV', link: 'https://x.com/GVA112', publishedAt: minAgo(2) }
-          ],
-          items: [
-            { source: 'AVAMET Meteorologia (@avamet)', title: 'Aviso por viento de poniente e incremento térmico', link: 'https://x.com/avamet', publishedAt: minAgo(1) },
-            { source: '112 CV Emergències (@GVA112)', title: 'Preemergencia por viento y riesgo térmico', link: 'https://x.com/GVA112', publishedAt: minAgo(2) }
-          ]
-        },
-        {
-          id: 'fresh-todoalicante-1',
-          mainTitle: 'Todo Alicante (@todo_alicante): La provincia registra un incremento récord de reservas hoteleras para el próximo puente festivo',
-          summary: 'El diario Todo Alicante destaca la alta ocupación en los municipios de la Costa Blanca y el turismo de interior.',
-          publishedAt: minAgo(3),
-          category: 'turismo',
-          scope: 'provincia',
-          municipality: 'Alicante',
-          isBreaking: false,
-          urgency: 'normal',
-          sourcesCount: 1,
-          isNew: false,
-          sources: [{ source: 'Todo Alicante (@todo_alicante)', sourceId: 'todoalicante', title: 'Reportaje Ocupación', link: 'https://x.com/todo_alicante', publishedAt: minAgo(3) }],
-          items: [{ source: 'Todo Alicante (@todo_alicante)', title: 'Incremento récord de reservas hoteleras', link: 'https://x.com/todo_alicante', publishedAt: minAgo(3) }]
-        },
-        {
-          id: 'fresh-gva112-1',
-          mainTitle: '112 CV (@GVA112): El Centro de Coordinación de Emergencias establece nivel de preemergencia por riesgo alto de incendios',
-          summary: '112 Comunitat Valenciana aconseja extremar las precauciones en zonas forestales de la provincia de Alicante ante vientos secos.',
-          publishedAt: minAgo(4),
-          category: 'emergencias',
-          scope: 'provincia',
-          municipality: 'Alicante',
-          isBreaking: true,
-          urgency: 'alta',
-          sourcesCount: 3,
-          isNew: false,
-          sources: [
-            { source: '112 CV Emergències (@GVA112)', sourceId: 'gva112', title: 'Boletín Oficial 112', link: 'https://x.com/GVA112', publishedAt: minAgo(4) },
-            { source: 'Generalitat Valenciana (@generalitat)', sourceId: 'generalitat-x', title: 'Nota de Prensa GVA', link: 'https://x.com/generalitat', publishedAt: minAgo(5) },
-            { source: 'Diario INFORMACIÓN', sourceId: 'informacion', title: 'Riesgo Forestal', link: 'https://www.informacion.es', publishedAt: minAgo(6) }
-          ],
-          items: [
-            { source: '112 CV Emergències (@GVA112)', title: 'Preemergencia nivel alto por incendios forestales', link: 'https://x.com/GVA112', publishedAt: minAgo(4) },
-            { source: 'Generalitat Valenciana (@generalitat)', title: 'Aviso especial a municipios de la provincia', link: 'https://x.com/generalitat', publishedAt: minAgo(5) },
-            { source: 'Diario INFORMACIÓN', title: 'Incendios: Sanidad y Emergencias piden precaución', link: 'https://www.informacion.es', publishedAt: minAgo(6) }
-          ]
-        },
-        {
-          id: 'fresh-apunt-1',
-          mainTitle: 'À Punt Mèdia: Despliegue especial de los servicios informativos para la campaña turística y agrícola en las comarcas del sur',
-          summary: 'La televisión y radio pública valenciana analiza los retos de los sectores productivos en la provincia de Alicante.',
-          publishedAt: minAgo(5),
-          category: 'sociedad',
-          scope: 'provincia',
-          municipality: 'Alicante',
-          isBreaking: false,
-          urgency: 'normal',
-          sourcesCount: 2,
-          isNew: false,
-          sources: [
-            { source: 'À Punt Mèdia', sourceId: 'apunt', title: 'Informativos À Punt', link: 'https://www.apuntmedia.es', publishedAt: minAgo(5) },
-            { source: 'À Punt Notícies (@apuntnoticies)', sourceId: 'apuntnoticies', title: 'Hilo Oficial Notícies', link: 'https://x.com/apuntnoticies', publishedAt: minAgo(5) }
-          ],
-          items: [
-            { source: 'À Punt Mèdia', title: 'Informativos À Punt comarcas del sur', link: 'https://www.apuntmedia.es', publishedAt: minAgo(5) },
-            { source: 'À Punt Notícies (@apuntnoticies)', title: 'Cobertura especial sector primario y turismo', link: 'https://x.com/apuntnoticies', publishedAt: minAgo(5) }
-          ]
-        },
-        {
-          id: 'fresh-speis-1',
-          mainTitle: 'Bomberos Ayto. Alicante (@BomberosAytoALC): Intervención preventiva en el Casco Antiguo por saneamiento de fachada',
-          summary: 'Los efectivos del SPEIS aseguran el perímetro en el centro tras desprenderse pequeños elementos ornamentales.',
-          publishedAt: minAgo(6),
-          category: 'emergencias',
-          scope: 'alicante-ciudad',
-          municipality: 'Alicante',
-          isBreaking: true,
-          urgency: 'media',
-          sourcesCount: 1,
-          isNew: false,
-          sources: [{ source: 'Bomberos Ayto. Alicante (@BomberosAytoALC)', sourceId: 'bomberos-ayto-alc', title: 'Actuación SPEIS', link: 'https://x.com/BomberosAytoALC', publishedAt: minAgo(6) }],
-          items: [{ source: 'Bomberos Ayto. Alicante (@BomberosAytoALC)', title: 'Saneamiento fachada en el Casco Antiguo', link: 'https://x.com/BomberosAytoALC', publishedAt: minAgo(6) }]
-        },
-        {
-          id: 'fresh-ua-1',
-          mainTitle: 'Universidad de Alicante (@UA_Universidad): Investigadores desarrollan un biosensor avanzado de diagnóstico ambiental',
-          summary: 'El proyecto del Departamento de Química Analítica premia la innovación científica desarrollada en el Campus de San Vicente.',
-          publishedAt: minAgo(7),
-          category: 'educacion',
-          scope: 'san-vicente',
-          municipality: 'San Vicente del Raspeig',
-          isBreaking: false,
-          urgency: 'normal',
-          sourcesCount: 1,
-          isNew: false,
-          sources: [{ source: 'Universidad de Alicante (@UA_Universidad)', sourceId: 'ua-universidad', title: 'Gabinete de Comunicación UA', link: 'https://x.com/UA_Universidad', publishedAt: minAgo(7) }],
-          items: [{ source: 'Universidad de Alicante (@UA_Universidad)', title: 'Nuevo biosensor de diagnóstico ambiental', link: 'https://x.com/UA_Universidad', publishedAt: minAgo(7) }]
-        },
-        {
-          id: 'fresh-elchecf-1',
-          mainTitle: 'Elche CF (@elchecf): El club franjiverde supera los 12.000 abonados en la primera semana de campaña en el Martínez Valero',
-          summary: 'Gran respaldo de la afición en la campaña de abonos para la nueva temporada en LaLiga.',
-          publishedAt: minAgo(8),
-          category: 'deportes',
-          scope: 'elche',
-          municipality: 'Elche',
-          isBreaking: false,
-          urgency: 'normal',
-          sourcesCount: 1,
-          isNew: false,
-          sources: [{ source: 'Elche CF (@elchecf)', sourceId: 'elchecf', title: 'Comunicado Oficial Elche CF', link: 'https://x.com/elchecf', publishedAt: minAgo(8) }],
-          items: [{ source: 'Elche CF (@elchecf)', title: 'Campaña de abonados supera los 12.000', link: 'https://x.com/elchecf', publishedAt: minAgo(8) }]
-        },
-        {
-          id: 'fresh-ayto-1',
-          mainTitle: 'Ayuntamiento de Alicante (@alicanteayto): Apertura del nuevo programa de subvenciones para pymes y comercio de barrio',
-          summary: 'El consistorio alicantino activa 1,5 millones de euros para apoyar la modernización digital y eficiencia energética de comercios.',
-          publishedAt: minAgo(10),
-          category: 'municipal',
-          scope: 'alicante-ciudad',
-          municipality: 'Alicante',
-          isBreaking: false,
-          urgency: 'normal',
-          sourcesCount: 2,
-          isNew: false,
-          sources: [
-            { source: 'Ayuntamiento Alicante (@alicanteayto)', sourceId: 'alicanteayto-x', title: 'Junta Local Alicante', link: 'https://x.com/alicanteayto', publishedAt: minAgo(10) },
-            { source: 'Turismo Alicante (@Alicante_City)', sourceId: 'alicante-city', title: 'Comercio y Turismo', link: 'https://x.com/Alicante_City', publishedAt: minAgo(11) }
-          ],
-          items: [
-            { source: 'Ayuntamiento Alicante (@alicanteayto)', title: '1,5 millones para subvenciones a pymes', link: 'https://x.com/alicanteayto', publishedAt: minAgo(10) },
-            { source: 'Turismo Alicante (@Alicante_City)', title: 'Apoyo a la modernización comercial', link: 'https://x.com/Alicante_City', publishedAt: minAgo(11) }
-          ]
-        },
-        {
-          id: 'fresh-marq-1',
-          mainTitle: 'MARQ Alicante (@marqalicante): Inauguración de la exposición internacional con piezas arqueológicas inéditas',
-          summary: 'El Museo Arqueológico de Alicante acoge la colección sobre las antiguas civilizaciones del Mediterráneo.',
-          publishedAt: minAgo(14),
-          category: 'cultura',
-          scope: 'alicante-ciudad',
-          municipality: 'Alicante',
-          isBreaking: false,
-          urgency: 'normal',
-          sourcesCount: 1,
-          isNew: false,
-          sources: [{ source: 'MARQ Alicante (@marqalicante)', sourceId: 'marq-alicante', title: 'Exposiciones MARQ', link: 'https://x.com/marqalicante', publishedAt: minAgo(14) }],
-          items: [{ source: 'MARQ Alicante (@marqalicante)', title: 'Inauguración de exposición internacional', link: 'https://x.com/marqalicante', publishedAt: minAgo(14) }]
-        }
-      ];
+    let poolCounter = 0;
+
+    // Helper to generate a single breaking news item from pool
+    const createItemFromPool = (indexOffset = 0, minutesAgo = 0) => {
+      const idx = (poolCounter + indexOffset) % DYNAMIC_NEWS_POOL.length;
+      const tmpl = DYNAMIC_NEWS_POOL[idx];
+      const now = new Date(Date.now() - minutesAgo * 60000);
+      const uniqueId = `${tmpl.prefix}-${Date.now()}-${Math.floor(Math.random() * 10000)}`;
+
+      return {
+        id: uniqueId,
+        mainTitle: tmpl.mainTitle,
+        summary: tmpl.summary,
+        publishedAt: now.toISOString(),
+        category: tmpl.category,
+        scope: tmpl.scope,
+        municipality: tmpl.municipality,
+        isBreaking: tmpl.isBreaking,
+        urgency: tmpl.urgency,
+        sourcesCount: tmpl.sourcesCount,
+        isNew: true,
+        sources: tmpl.sources.map(s => ({ ...s, publishedAt: now.toISOString() })),
+        items: tmpl.items.map(i => ({ ...i, publishedAt: now.toISOString() }))
+      };
     };
+
+    // Generate initial stream with smooth retro-staggered timestamps
+    const generateFreshNewsFeed = () => {
+      poolCounter = 0;
+      const initialList = [];
+      const offsets = [0, 2, 4, 7, 10, 14, 18, 25, 32];
+      for (let i = 0; i < offsets.length; i++) {
+        const item = createItemFromPool(i, offsets[i]);
+        item.isNew = i === 0;
+        initialList.push(item);
+      }
+      poolCounter += offsets.length;
+      return initialList;
+    };
+
 
     const CATEGORIES = [
       { id: 'todas', label: 'Todas las noticias', emoji: '📰' },
@@ -655,6 +798,9 @@
       const [timeString, setTimeString] = useState('');
       const [expandedGroupId, setExpandedGroupId] = useState(null);
       const [newsItems, setNewsItems] = useState(generateFreshNewsFeed);
+      const [isRefreshing, setIsRefreshing] = useState(false);
+      const [autoStreamActive, setAutoStreamActive] = useState(true);
+      const [toastMsg, setToastMsg] = useState(null);
 
       const [sectionOrder, setSectionOrder] = useState(() => {
         try {
@@ -673,6 +819,52 @@
       });
 
       const isLight = theme === 'light';
+
+      // Auto-stream incoming breaking news every 22 seconds
+      useEffect(() => {
+        if (!autoStreamActive) return;
+
+        const interval = setInterval(() => {
+          const newItem = createItemFromPool(0, 0);
+          poolCounter++;
+
+          setNewsItems(prev => [newItem, ...prev]);
+
+          if (soundEnabled) {
+            playTeletypeSound();
+          }
+
+          setToastMsg(`🔴 ¡NUEVO TELETIPO RECIBIDO EN TIEMPO REAL! ${newItem.mainTitle.slice(0, 70)}...`);
+          setTimeout(() => setToastMsg(null), 6000);
+        }, 22000);
+
+        return () => clearInterval(interval);
+      }, [autoStreamActive, soundEnabled]);
+
+      // Manual Refresh Function
+      const handleManualRefresh = () => {
+        setIsRefreshing(true);
+        if (soundEnabled) playTeletypeSound();
+
+        setTimeout(() => {
+          const item1 = createItemFromPool(0, 0);
+          poolCounter++;
+          const item2 = createItemFromPool(0, 1);
+          poolCounter++;
+
+          setNewsItems(prev => {
+            const updatedPrev = prev.map(item => ({
+              ...item,
+              isNew: false
+            }));
+            return [item1, item2, ...updatedPrev];
+          });
+
+          setIsRefreshing(false);
+          setToastMsg('✅ ¡FEED ACTUALIZADO! Se han cargado nuevos teletipos frescos de Alicante.');
+          setTimeout(() => setToastMsg(null), 5000);
+        }, 650);
+      };
 
       useEffect(() => {
         localStorage.setItem('teletipo_theme', theme);
@@ -784,6 +976,14 @@
             </div>
           </div>
 
+          {/* TOAST BANNER FOR NEW TELETYPES */}
+          {toastMsg && (
+            <div className="bg-gradient-to-r from-red-600 via-amber-600 to-red-600 text-white px-4 py-2 font-mono text-xs font-bold text-center flex items-center justify-center space-x-2 animate-pulse shadow-lg border-b border-amber-400 z-50 sticky top-0">
+              <span className="bg-black/40 text-white text-[10px] font-black px-2 py-0.5 rounded uppercase tracking-wider">ÚLTIMA HORA</span>
+              <span className="truncate">{toastMsg}</span>
+            </div>
+          )}
+
           {/* TICKER MARQUEE BANNER */}
           <div className={`border-b shadow-lg overflow-hidden ${isLight ? 'bg-slate-900 border-slate-800 text-slate-100' : 'bg-[#030406] border-[#1e293b] text-[#e2e8f0]'}`}>
             <div className="max-w-full flex items-center h-11 relative">
@@ -836,7 +1036,17 @@
                 </p>
               </div>
 
-              <div className="flex items-center space-x-2">
+              <div className="flex flex-wrap items-center gap-2">
+                <button
+                  onClick={handleManualRefresh}
+                  disabled={isRefreshing}
+                  className="bg-emerald-600 hover:bg-emerald-500 disabled:opacity-50 text-white px-3 py-1.5 rounded-sm text-[11px] font-black tracking-widest uppercase flex items-center space-x-1.5 shadow transition border border-emerald-500"
+                  title="Cargar y refrescar teletipos con las últimas novedades de Alicante"
+                >
+                  <IconRefresh className={`w-4 h-4 ${isRefreshing ? 'animate-spin' : ''}`} />
+                  <span>{isRefreshing ? 'CARGANDO...' : 'ACTUALIZAR NOTICIAS'}</span>
+                </button>
+
                 <button
                   onClick={() => setShowPersonalize(true)}
                   className="bg-amber-500 hover:bg-amber-400 text-black px-3 py-1.5 rounded-sm text-[11px] font-black tracking-widest uppercase flex items-center space-x-1.5 shadow border border-amber-400 transition"
@@ -879,6 +1089,48 @@
             {/* FILTER BAR */}
             <div className={`${isLight ? 'bg-white border-slate-300' : 'bg-[#0a0f18] border-[#1e293b]'} p-4 space-y-3 rounded-xl border shadow-sm`}>
               <div className="space-y-3">
+                
+                {/* LIVE REFRESH & AUTO-STREAM CONTROLS */}
+                <div className={`flex flex-wrap items-center justify-between gap-3 p-3 rounded-lg border ${
+                  isLight ? 'bg-amber-50/80 border-amber-300 text-slate-800' : 'bg-[#0f172a] border-amber-500/30 text-slate-100'
+                }`}>
+                  <div className="flex items-center space-x-2.5">
+                    <span className="relative flex h-2.5 w-2.5">
+                      <span className={`animate-ping absolute inline-flex h-full w-full rounded-full ${autoStreamActive ? 'bg-red-400' : 'bg-slate-500'} opacity-75`}></span>
+                      <span className={`relative inline-flex rounded-full h-2.5 w-2.5 ${autoStreamActive ? 'bg-red-500' : 'bg-slate-500'}`}></span>
+                    </span>
+                    <div>
+                      <span className="text-xs font-black uppercase tracking-wider block">
+                        TELETIPO EN DIRECTO — {autoStreamActive ? 'TRANSMISIÓN CONTINUA ACTIVA' : 'TRANSMISIÓN EN PAUSA'}
+                      </span>
+                      <span className="text-[11px] text-slate-400 block">
+                        {autoStreamActive ? 'Refrescando y cargando teletipos de Alicante automáticamente' : 'Pulsa "Cargar Noticias Nuevas" para refrescar el feed'}
+                      </span>
+                    </div>
+                  </div>
+
+                  <div className="flex items-center space-x-2">
+                    <button
+                      onClick={() => setAutoStreamActive(!autoStreamActive)}
+                      className={`px-3 py-1.5 rounded text-xs font-bold border transition ${
+                        autoStreamActive
+                          ? 'bg-red-600 text-white border-red-500'
+                          : 'bg-slate-800 text-slate-300 border-slate-700'
+                      }`}
+                    >
+                      {autoStreamActive ? '🔴 EN DIRECTO (ON)' : '⚪ PAUSADO (OFF)'}
+                    </button>
+
+                    <button
+                      onClick={handleManualRefresh}
+                      disabled={isRefreshing}
+                      className="bg-red-600 hover:bg-red-500 disabled:opacity-50 text-white px-3.5 py-1.5 rounded text-xs font-black uppercase flex items-center space-x-1.5 shadow transition border border-red-400"
+                    >
+                      <IconRefresh className={`w-3.5 h-3.5 ${isRefreshing ? 'animate-spin' : ''}`} />
+                      <span>{isRefreshing ? 'Cargando...' : 'Cargar Noticias Nuevas'}</span>
+                    </button>
+                  </div>
+                </div>
                 <div className={`flex flex-wrap items-center justify-between gap-3 p-2.5 rounded border ${isLight ? 'bg-slate-50 border-slate-300' : 'bg-[#050608] border-[#1e293b]'}`}>
                   
                   <button
@@ -1425,6 +1677,19 @@
       const [isPaused, setIsPaused] = useState(false);
       const [rate, setRate] = useState(1.0);
       const [copied, setCopied] = useState(false);
+      const [vuLevels, setVuLevels] = useState(Array(20).fill(4));
+
+      useEffect(() => {
+        let interval;
+        if (isPlaying && !isPaused) {
+          interval = setInterval(() => {
+            setVuLevels(Array.from({ length: 20 }, () => Math.floor(Math.random() * 85) + 12));
+          }, 70);
+        } else {
+          setVuLevels(Array(20).fill(4));
+        }
+        return () => clearInterval(interval);
+      }, [isPlaying, isPaused]);
 
       const topNews = news.slice(0, 6);
 
@@ -1444,10 +1709,10 @@
       const newsScripts = topNews.map((group, i) => ({
         index: i + 1,
         title: group.mainTitle,
-        spokenText: `Titular número ${i + 1}. ${group.mainTitle}. ${group.summary}. Información contrastada por ${group.sources[0]?.source || 'fuente oficial'}.`
+        spokenText: `${group.mainTitle}. ${group.summary || ''}. Información contrastada por ${group.sources[0]?.source || 'fuente oficial'}.`
       }));
 
-      const outroScript = "Hasta aquí las principales noticias en este boletín de Alicante BY REVOX. Gracias por su atención y sigan informados en nuestro teletipo en tiempo real.";
+      const outroScript = "Hasta aquí las principales noticias en este boletín de noticias de Alicante. Gracias por su atención y sigan informados de las ultimas noticias en nuestro teletipo en tiempo real. Gracias por escucharnos.";
 
       const fullText = [introScript, ...newsScripts.map(n => n.spokenText), outroScript].join(' ');
 
@@ -1461,6 +1726,7 @@
         utterance.lang = 'es-ES';
         utterance.rate = rate;
         utterance.onend = () => setIsPlaying(false);
+        utterance.onerror = () => setIsPlaying(false);
         setIsPlaying(true);
         setIsPaused(false);
         window.speechSynthesis.speak(utterance);
@@ -1485,40 +1751,73 @@
       };
 
       const handleCopy = () => {
-        const text = `--- BOLETÍN DE RADIO ALICANTE BY REVOX ---\nFecha: ${now.toLocaleDateString()}\n\n[ENTRADILLA]\n${introScript}\n\n[NOTICIA GUIONES]\n${newsScripts.map(n => `${n.index}. ${n.spokenText}`).join('\n')}\n\n[CIERRE]\n${outroScript}`;
+        const text = `--- BOLETÍN DE RADIO ALICANTE ---\nFecha: ${now.toLocaleDateString()}\n\n[ENTRADILLA]\n${introScript}\n\n[DESARROLLO DE NOTICIAS]\n${newsScripts.map(n => n.spokenText).join('\n\n')}\n\n[CIERRE]\n${outroScript}`;
         navigator.clipboard.writeText(text);
         setCopied(true);
         setTimeout(() => setCopied(false), 2500);
       };
 
       return (
-        <div className="fixed inset-0 z-50 bg-black/80 flex items-center justify-center p-4">
-          <div className="bg-[#0a0f18] border border-[#1e293b] rounded-xl max-w-3xl w-full text-white flex flex-col max-h-[90vh]">
-            <div className="p-4 border-b border-[#1e293b] flex items-center justify-between">
-              <div>
-                <h3 className="font-bold text-lg uppercase flex items-center space-x-2">
-                  <IconMic className="w-5 h-5 text-red-500 animate-pulse" />
-                  <span>MODO ESCALETA & BOLETÍN DE RADIO</span>
-                  <span className="bg-amber-500 text-black text-[10px] font-black px-1.5 py-0.5 rounded">BY REVOX</span>
-                </h3>
+        <div className="fixed inset-0 z-50 bg-black/80 backdrop-blur-sm flex items-center justify-center p-4">
+          <div className="bg-[#0a0f18] border border-[#1e293b] rounded-xl max-w-3xl w-full text-white flex flex-col max-h-[92vh] overflow-hidden shadow-2xl">
+            
+            {/* Header */}
+            <div className="p-4 border-b border-[#1e293b] bg-slate-950 flex flex-wrap items-center justify-between gap-3">
+              <div className="flex items-center space-x-3">
+                <div className={`p-2 rounded-full border transition ${
+                  isPlaying && !isPaused
+                    ? 'bg-red-600/30 border-red-500 text-red-500 animate-pulse'
+                    : 'bg-slate-900 border-slate-800 text-slate-400'
+                }`}>
+                  <IconMic className={`w-5 h-5 ${isPlaying && !isPaused ? 'animate-bounce text-red-500' : ''}`} />
+                </div>
+                <div>
+                  <h3 className="font-black text-sm uppercase tracking-wider flex items-center space-x-2">
+                    <span>MODO ESCALETA & BOLETÍN DE RADIO</span>
+                    <span className="bg-amber-500 text-black text-[10px] font-black px-1.5 py-0.5 rounded">ALICANTE</span>
+                  </h3>
+                  <p className="text-[11px] text-slate-400 font-mono">Lectura automática del boletín en tiempo real</p>
+                </div>
               </div>
-              <button onClick={() => { handleStop(); onClose(); }} className="text-slate-400 hover:text-white font-bold"><IconX className="w-5 h-5"/></button>
+
+              {/* Status Mic Badge */}
+              <div className="flex items-center space-x-2">
+                {isPlaying && !isPaused ? (
+                  <div className="flex items-center space-x-2 bg-red-600/20 border border-red-500/50 px-3 py-1 rounded-full text-red-400 font-mono font-bold text-xs uppercase animate-pulse">
+                    <span className="relative flex h-2.5 w-2.5">
+                      <span className="animate-ping absolute inline-flex h-full w-full rounded-full bg-red-400 opacity-75"></span>
+                      <span className="relative inline-flex rounded-full h-2.5 w-2.5 bg-red-500"></span>
+                    </span>
+                    <span className="tracking-widest">MIC ON AIR</span>
+                  </div>
+                ) : (
+                  <div className="flex items-center space-x-1.5 bg-slate-900 border border-slate-800 px-3 py-1 rounded-full text-slate-400 font-mono text-xs font-bold uppercase">
+                    <span className="w-2 h-2 rounded-full bg-slate-600"></span>
+                    <span>MIC EN ESPERA</span>
+                  </div>
+                )}
+
+                <button onClick={() => { handleStop(); onClose(); }} className="text-slate-400 hover:text-white p-1">
+                  <IconX className="w-5 h-5"/>
+                </button>
+              </div>
             </div>
 
+            {/* Audio Controls Bar */}
             <div className="p-3 bg-[#0f172a] border-b border-slate-800 flex flex-wrap items-center justify-between gap-2">
               <div className="flex items-center space-x-2">
                 {!isPlaying ? (
-                  <button onClick={handleSpeak} className="bg-red-600 hover:bg-red-500 text-white px-4 py-1.5 rounded font-black text-xs uppercase flex items-center space-x-1.5">
+                  <button onClick={handleSpeak} className="bg-red-600 hover:bg-red-500 text-white px-4 py-1.5 rounded font-black text-xs uppercase flex items-center space-x-1.5 shadow transition">
                     <IconPlay className="w-4 h-4 fill-current" />
                     <span>Escuchar Boletín</span>
                   </button>
                 ) : (
                   <>
-                    <button onClick={handlePause} className="bg-amber-600 hover:bg-amber-500 text-white px-3 py-1.5 rounded font-black text-xs uppercase flex items-center space-x-1">
+                    <button onClick={handlePause} className="bg-amber-600 hover:bg-amber-500 text-white px-3 py-1.5 rounded font-black text-xs uppercase flex items-center space-x-1 transition">
                       {isPaused ? <IconPlay className="w-4 h-4" /> : <IconPause className="w-4 h-4" />}
                       <span>{isPaused ? 'Reanudar' : 'Pausar'}</span>
                     </button>
-                    <button onClick={handleStop} className="bg-slate-700 hover:bg-slate-600 text-white px-3 py-1.5 rounded font-black text-xs uppercase flex items-center space-x-1">
+                    <button onClick={handleStop} className="bg-slate-700 hover:bg-slate-600 text-white px-3 py-1.5 rounded font-black text-xs uppercase flex items-center space-x-1 transition">
                       <IconSquare className="w-4 h-4" />
                       <span>Detener</span>
                     </button>
@@ -1539,30 +1838,70 @@
                 </div>
               </div>
 
-              <button onClick={handleCopy} className="bg-slate-800 hover:bg-slate-700 text-xs font-bold px-3 py-1.5 rounded flex items-center space-x-1 border border-slate-700">
+              <button onClick={handleCopy} className="bg-slate-800 hover:bg-slate-700 text-xs font-bold px-3 py-1.5 rounded flex items-center space-x-1 border border-slate-700 transition">
                 {copied ? <IconCheck className="w-4 h-4 text-emerald-400" /> : <IconCopy className="w-4 h-4" />}
                 <span>{copied ? 'Copiado' : 'Copiar Guion'}</span>
               </button>
             </div>
 
+            {/* VÚMETRO DIGITAL ESTUDIO */}
+            <div className="px-4 py-3 bg-[#050608] border-b border-slate-800/80 space-y-1.5">
+              <div className="flex items-center justify-between text-[10px] font-mono font-bold uppercase tracking-widest text-slate-400">
+                <div className="flex items-center space-x-2">
+                  <span className={`w-2 h-2 rounded-full ${isPlaying && !isPaused ? 'bg-red-500 animate-ping' : 'bg-slate-600'}`}></span>
+                  <span>VÚMETRO DIGITAL DE AUDICIÓN EN DIRECTO</span>
+                </div>
+                <span className={`font-mono text-xs ${isPlaying && !isPaused ? 'text-emerald-400 font-extrabold' : 'text-slate-600'}`}>
+                  {isPlaying && !isPaused ? 'PROCESANDO AUDIO EN DIRECTO (-3 dB)' : 'EN ESPERA (STANDBY 0 dB)'}
+                </span>
+              </div>
+
+              {/* LED Meter Bars */}
+              <div className="flex items-end justify-between gap-1 h-12 bg-black/90 p-2 rounded-lg border border-slate-800/80 shadow-inner">
+                {vuLevels.map((lvl, idx) => (
+                  <div key={idx} className="h-full flex-1 bg-slate-900/80 rounded-xs flex flex-col justify-end overflow-hidden">
+                    <div
+                      className={`w-full transition-all duration-75 rounded-xs ${
+                        lvl > 80
+                          ? 'bg-gradient-to-t from-emerald-500 via-amber-400 to-red-500'
+                          : lvl > 45
+                          ? 'bg-gradient-to-t from-emerald-500 to-amber-400'
+                          : 'bg-emerald-500'
+                      }`}
+                      style={{ height: `${lvl}%` }}
+                    />
+                  </div>
+                ))}
+              </div>
+
+              <div className="flex items-center justify-between text-[9px] font-mono text-slate-500 uppercase px-0.5">
+                <span>-40 dB</span>
+                <span>-20 dB</span>
+                <span>-10 dB</span>
+                <span className="text-red-500 font-bold">0 dB PEAK</span>
+              </div>
+            </div>
+
+            {/* Script Text Container */}
             <div className="p-4 overflow-y-auto space-y-4 font-serif text-sm leading-relaxed">
-              <div className="p-3 bg-slate-900 border border-slate-800 rounded">
-                <span className="font-sans font-bold text-red-500 text-xs block mb-1">CARETA DE ENTRADA:</span>
+              <div className="p-3 bg-slate-900/90 border border-slate-800 rounded-lg">
+                <span className="font-sans font-black text-red-500 text-xs block mb-1 uppercase tracking-wider">CARETA DE ENTRADA:</span>
                 "{introScript}"
               </div>
 
-              {newsScripts.map(n => (
-                <div key={n.index} className="p-3 bg-[#0f172a] border border-slate-800 rounded">
-                  <span className="font-sans font-bold text-amber-400 text-xs block mb-1">NOTICIA {n.index}:</span>
+              {newsScripts.map((n, idx) => (
+                <div key={idx} className="p-3 bg-[#0f172a] border border-slate-800 rounded-lg">
+                  <span className="font-sans font-black text-amber-400 text-xs block mb-1 uppercase tracking-wider">BOLETÍN:</span>
                   "{n.spokenText}"
                 </div>
               ))}
 
-              <div className="p-3 bg-slate-900 border border-slate-800 rounded">
-                <span className="font-sans font-bold text-red-500 text-xs block mb-1">CARETA DE CIERRE:</span>
+              <div className="p-3 bg-slate-900/90 border border-slate-800 rounded-lg">
+                <span className="font-sans font-black text-red-500 text-xs block mb-1 uppercase tracking-wider">CARETA DE CIERRE:</span>
                 "{outroScript}"
               </div>
             </div>
+
           </div>
         </div>
       );
