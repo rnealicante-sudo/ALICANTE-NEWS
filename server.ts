@@ -44,10 +44,21 @@ async function startServer() {
   // Get News Endpoint
   app.get('/api/news', async (req, res) => {
     try {
-      const { news, status, statusMessage, sourceStatuses } =
-        await fetchLiveNewsFromFeeds(activeSourceIds);
+      const {
+        news,
+        lastSourcesCheck,
+        latestPublishedAt,
+        newCount,
+        updatedCount,
+        totalCount,
+        status,
+        statusMessage,
+        sourceStatuses,
+        temporalIncidentsCount,
+        averageLatencyMs,
+      } = await fetchLiveNewsFromFeeds(activeSourceIds);
 
-      // Perform news grouping
+      // Perform news grouping & deduplication
       const groupedNews = groupNewsItems(news);
 
       // Select top highlighted news
@@ -55,9 +66,16 @@ async function startServer() {
 
       const response: NewsApiResponse = {
         timestamp: new Date().toISOString(),
+        lastSourcesCheck,
+        latestPublishedAt,
+        newCount,
+        updatedCount,
+        totalCount,
         status,
         statusMessage,
         sourceStatuses,
+        temporalIncidentsCount,
+        averageLatencyMs,
         news,
         groupedNews,
         highlightedNews,
@@ -68,13 +86,38 @@ async function startServer() {
       console.error('Error in /api/news:', error);
       res.status(500).json({
         timestamp: new Date().toISOString(),
+        lastSourcesCheck: new Date().toISOString(),
+        latestPublishedAt: new Date().toISOString(),
+        newCount: 0,
+        updatedCount: 0,
+        totalCount: 0,
         status: 'no_connection',
         statusMessage: 'Sin conexión con las fuentes',
         sourceStatuses: {},
+        temporalIncidentsCount: 0,
+        averageLatencyMs: 0,
         news: [],
         groupedNews: [],
         highlightedNews: [],
       });
+    }
+  });
+
+  // Manual Trigger Refresh Endpoint
+  app.post('/api/news/refresh', async (req, res) => {
+    try {
+      const result = await fetchLiveNewsFromFeeds(activeSourceIds);
+      const groupedNews = groupNewsItems(result.news);
+      const highlightedNews = selectHighlightedNews(groupedNews, 5);
+
+      res.json({
+        ...result,
+        groupedNews,
+        highlightedNews,
+        timestamp: new Date().toISOString(),
+      });
+    } catch (error: any) {
+      res.status(500).json({ success: false, error: error.message });
     }
   });
 

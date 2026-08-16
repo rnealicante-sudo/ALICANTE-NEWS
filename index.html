@@ -168,12 +168,6 @@
     const IconMoon = ({ className = "w-4 h-4" }) => (
       <svg className={className} fill="none" stroke="currentColor" viewBox="0 0 24 24"><path strokeLinecap="round" strokeLinejoin="round" strokeWidth="2" d="M21 12.79A9 9 0 1111.21 3 7 7 0 0021 12.79z"/></svg>
     );
-    const IconVolume2 = ({ className = "w-4 h-4" }) => (
-      <svg className={className} fill="none" stroke="currentColor" viewBox="0 0 24 24"><polygon points="11 5 6 9 2 9 2 15 6 15 11 19 11 5" strokeWidth="2"/><path strokeLinecap="round" strokeLinejoin="round" strokeWidth="2" d="M19.07 4.93a10 10 0 010 14.14M15.54 8.46a5 5 0 010 7.07"/></svg>
-    );
-    const IconFlame = ({ className = "w-4 h-4" }) => (
-      <svg className={className} fill="none" stroke="currentColor" viewBox="0 0 24 24"><path strokeLinecap="round" strokeLinejoin="round" strokeWidth="2" d="M17.657 18.657A8 8 0 016.343 7.343S7 9 9 10c0-2 .5-5 2.986-7C14 5 16.09 5.777 17.656 7.343A7.975 7.975 0 0120 13a7.975 7.975 0 01-2.343 5.657z"/></svg>
-    );
     const IconLayers = ({ className = "w-4 h-4" }) => (
       <svg className={className} fill="none" stroke="currentColor" viewBox="0 0 24 24"><polygon points="12 2 2 7 12 12 22 7 12 2" strokeWidth="2"/><polyline points="2 17 12 22 22 17" strokeWidth="2"/><polyline points="2 12 12 17 22 12" strokeWidth="2"/></svg>
     );
@@ -189,823 +183,153 @@
     const IconRefresh = ({ className = "w-4 h-4" }) => (
       <svg className={className} fill="none" stroke="currentColor" viewBox="0 0 24 24"><path strokeLinecap="round" strokeLinejoin="round" strokeWidth="2" d="M4 4v5h.582m15.356 2A8.001 8.001 0 004.582 9m0 0H9m11 11v-5h-.581m0 0a8.003 8.003 0 01-15.357-2m15.357 2H15"/></svg>
     );
+    const IconGlobe = ({ className = "w-4 h-4" }) => (
+      <svg className={className} fill="none" stroke="currentColor" viewBox="0 0 24 24"><circle cx="12" cy="12" r="10" strokeWidth="2"/><line x1="2" y1="12" x2="22" y2="12" strokeWidth="2"/><path d="M12 2a15.3 15.3 0 0 1 4 10 15.3 15.3 0 0 1-4 10 15.3 15.3 0 0 1-4-10 15.3 15.3 0 0 1 4-10z" strokeWidth="2"/></svg>
+    );
+    const IconBuilding = ({ className = "w-4 h-4" }) => (
+      <svg className={className} fill="none" stroke="currentColor" viewBox="0 0 24 24"><rect x="4" y="2" width="16" height="20" rx="2" ry="2" strokeWidth="2"/><path d="M9 22v-4h6v4M8 6h.01M16 6h.01M8 10h.01M16 10h.01M8 14h.01M16 14h.01" strokeWidth="2"/></svg>
+    );
 
-    // --- ALL 21 AUTHORIZED SOURCES INCLUDING TWITTER/X ACCOUNTS ---
-    const INITIAL_SOURCES = [
-      { id: 'gva112', name: '112 CV Emergències (@GVA112)', domain: '112cv.gva.es', type: 'emergencias', websiteUrl: 'https://x.com/GVA112', color: '#e53e3e', logoText: '112' },
-      { id: 'bomberos-ayto-alc', name: 'Bomberos Ayto. Alicante (@BomberosAytoALC)', domain: 'alicante.es', type: 'emergencias', websiteUrl: 'https://x.com/BomberosAytoALC', color: '#dc2626', logoText: 'SPEIS' },
-      { id: 'generalitat-x', name: 'Generalitat Valenciana (@generalitat)', domain: 'gva.es', type: 'institución', websiteUrl: 'https://x.com/generalitat', color: '#c41230', logoText: 'GVA' },
-      { id: 'gva-sanitat', name: 'Sanitat GVA (@GVAsanitat)', domain: 'san.gva.es', type: 'institución', websiteUrl: 'https://x.com/GVAsanitat', color: '#2b6cb0', logoText: 'SAN' },
-      { id: 'gva-cultura', name: 'Cultura Generalitat (@GVAcultura)', domain: 'ceice.gva.es', type: 'institución', websiteUrl: 'https://x.com/GVAcultura', color: '#702459', logoText: 'CUL' },
-      { id: 'diputacion', name: 'Diputación de Alicante', domain: 'diputacionalicante.es', type: 'institución', websiteUrl: 'https://www.diputacionalicante.es', color: '#0d9488', logoText: 'DIP' },
-      { id: 'alicanteayto-x', name: 'Ayuntamiento Alicante (@alicanteayto)', domain: 'alicante.es', type: 'ayuntamiento', websiteUrl: 'https://x.com/alicanteayto', color: '#005b94', logoText: 'AYT' },
-      { id: 'alicante-city', name: 'Turismo Alicante (@Alicante_City)', domain: 'alicanteturismo.com', type: 'ayuntamiento', websiteUrl: 'https://x.com/Alicante_City', color: '#00a896', logoText: 'ALC' },
-      { id: 'ua-universidad', name: 'Universidad de Alicante (@UA_Universidad)', domain: 'ua.es', type: 'institución', websiteUrl: 'https://x.com/UA_Universidad', color: '#003366', logoText: 'UA' },
-      { id: 'marq-alicante', name: 'MARQ Alicante (@marqalicante)', domain: 'marqalicante.com', type: 'institución', websiteUrl: 'https://x.com/marqalicante', color: '#8b0000', logoText: 'MARQ' },
-      { id: 'avamet', name: 'AVAMET Meteorologia (@avamet)', domain: 'avamet.org', type: 'institución', websiteUrl: 'https://x.com/avamet', color: '#2b6cb0', logoText: 'AVM' },
-      { id: 'informacion', name: 'Diario INFORMACIÓN', domain: 'informacion.es', type: 'media', websiteUrl: 'https://www.informacion.es/alicante/', color: '#003865', logoText: 'INFO' },
-      { id: 'todoalicante', name: 'Todo Alicante (@todo_alicante)', domain: 'todoalicante.es', type: 'media', websiteUrl: 'https://x.com/todo_alicante', color: '#004b93', logoText: 'TDA' },
-      { id: 'lasprovincias', name: 'Las Provincias (@lasprovincias)', domain: 'lasprovincias.es', type: 'media', websiteUrl: 'https://x.com/lasprovincias', color: '#e2001a', logoText: 'LP' },
-      { id: 'elmundo', name: 'El Mundo CV (@elmundocv)', domain: 'elmundo.es', type: 'media', websiteUrl: 'https://x.com/elmundocv', color: '#005da8', logoText: 'EM' },
-      { id: 'cope-alicante', name: 'COPE Alicante (@COPEAlicante)', domain: 'cope.es', type: 'media', websiteUrl: 'https://x.com/COPEAlicante', color: '#0054a6', logoText: 'COPE' },
-      { id: 'radioalicante', name: 'Radio Alicante SER (@radioalicante)', domain: 'cadenaser.com', type: 'media', websiteUrl: 'https://x.com/radioalicante', color: '#ffc700', logoText: 'SER' },
-      { id: 'alicanteplaza', name: 'Alicante Plaza', domain: 'alicanteplaza.es', type: 'media', websiteUrl: 'https://alicanteplaza.es', color: '#d9251d', logoText: 'AP' },
-      { id: 'apunt', name: 'À Punt Mèdia', domain: 'apuntmedia.es', type: 'media', websiteUrl: 'https://www.apuntmedia.es', color: '#00a3e0', logoText: 'ÀP' },
-      { id: 'apuntnoticies', name: 'À Punt Notícies (@apuntnoticies)', domain: 'apuntmedia.es', type: 'media', websiteUrl: 'https://x.com/apuntnoticies', color: '#00a3e0', logoText: 'ÀP' },
-      { id: 'elchecf', name: 'Elche CF (@elchecf)', domain: 'elchecf.es', type: 'media', websiteUrl: 'https://x.com/elchecf', color: '#006837', logoText: 'ECF' }
+    // List of Alicante municipalities & aliases for text highlighting
+    const ALICANTE_TOWNS = [
+      'Alicante', 'Alacant', 'Elche', 'Elx', 'Torrevieja', 'Orihuela', 'Benidorm',
+      'Alcoy', 'Alcoi', 'Elda', 'San Vicente del Raspeig', 'Sant Vicent del Raspeig',
+      'Dénia', 'Denia', 'Villena', 'Petrer', 'Santa Pola', 'Villajoyosa', 'La Vila Joiosa',
+      'Jávea', 'Xàbia', 'Calpe', 'Calp', 'Crevillente', 'Crevillent', 'Campello', 'El Campello',
+      'NoveIda', 'Novelda', 'Ibi', 'Altea', 'Mutxamel', 'Muchamiel', 'San Juan de Alicante',
+      'Sant Joan d\'Alacant', 'Pilar de la Horadada', 'Rojales', 'Aspe', 'Almoradí', 'Almoradi',
+      'Callosa de Segura', 'Guardamar del Segura', 'Guardamar', 'La Nucía', 'La Nucia',
+      'Monóvar', 'Monovar', 'Albatera', 'Cocentaina', 'Castalla', 'Pego', 'Sax', 'San Fulgencio',
+      'Catral', 'Redován', 'Redovan', 'Banyeres de Mariola', 'Bañeres', 'Onil', 'Finestrat',
+      'Pedreguer', 'Gata de Gorgos', 'Monforte del Cid', 'Benissa', 'Teulada', 'Moraira',
+      'Bigastro', 'Dolores', 'Cox', 'Jacarilla', 'Benejúzar', 'Benejuzar', 'Benijófar',
+      'Benijofar', 'Los Montesinos', 'San Miguel de Salinas', 'Formentera del Segura', 'Algorfa',
+      'Granja de Rocamora', 'Daya Nueva', 'Daya Vieja', 'San Isidro', 'Biar', 'Salinas',
+      'Beneixama', 'Campo de Mirra', 'Cañada', 'Tibí', 'Tibi', 'Bonalba', 'Busot', 'Aigües',
+      'Aguas de Busot', 'Torremanzanas', 'La Torre de les Maçanes', 'Xixona', 'Jijona',
+      'Agost', 'Hondón de las Nieves', 'El Fondó de les Neus', 'Hondón de los Frailes',
+      'La Romana', 'Algüeña', 'Algueña', 'Ondara', 'Vergel', 'El Verger', 'Els Poblets',
+      'Orba', 'Jalón', 'Xaló', 'Benitachell', 'El Poble Nou de Benitatxell', 'Llíber',
+      'Alcalalí', 'Parcent', 'Murla', 'Castell de Castells', 'Benigembla', 'Vall de Laguar',
+      'Vall de Gallinera', 'Vall d\'Alcalà', 'Vall d\'Ebo', 'Benidoleig', 'Sagra', 'Sanet y Negrals',
+      'Ràfol d\'Almúnia', 'Miraflor', 'Tormos', 'L\'Alfàs del Pi', 'Alfas del Pi', 'Albir',
+      'Polop', 'Polop de la Marina', 'Callosa d\'en Sarrià', 'Callosa de Ensarria', 'Guadalest',
+      'El Castell de Guadalest', 'Bolulla', 'Tàrbena', 'Tarbena', 'Confrides', 'Beniardà',
+      'Beniarda', 'Benifato', 'Abdet', 'Benimantell', 'Relleu', 'Sella', 'Orxeta',
+      'Muro de Alcoy', 'Muro d\'Alcoi', 'Beniarrés', 'Beniarres', 'Planes', 'Lorcha', 'L\'Orxa',
+      'Gaianes', 'Gayanes', 'Alcocer de Planes', 'Benilloba', 'Gorga', 'Millena', 'Balones',
+      'Benimassot', 'Tollos', 'Facheca', 'Fageca', 'Famorca', 'Quatretondeta', 'Alcoleja',
+      'Alcolecha', 'Penàguila', 'Penaguila', 'Benifallim', 'Benillup', 'Alfafara', 'Agres',
+      'L\'Alqueria d\'Asnar', 'Alquería de Aznar', 'Vega Baja', 'Marina Alta', 'Marina Baixa',
+      'Marina Baja', 'L\'Alacantí', 'Alacanti', 'Vinalopó', 'Vinalopo', 'Alcoià', 'El Comtat',
+      'Tabarca', 'Playa de San Juan', 'San Blas', 'Carolinas', 'Benalúa', 'Babel', 'Cabo de las Huertas'
     ];
 
-    const OFFICIAL_SOURCE_IDS = new Set([
-      'gva112', 'bomberos-ayto-alc', 'generalitat-x', 'gva-sanitat', 'gva-cultura', 'diputacion', 'alicanteayto-x', 'alicante-city', 'ua-universidad', 'marq-alicante', 'avamet'
-    ]);
+    // Escape string for regex
+    const escapeRegex = (str) => str.replace(/[.*+?^${}()|[\]\\]/g, '\\$&');
 
-    // DYNAMIC POOL OF UNIQUE NEWS TEMPLATES FOR ALICANTE (DEL MISMO DÍA)
-    const MASTER_NEWS_TEMPLATES = [
-      {
-        prefix: 'avamet-alerta',
-        mainTitle: 'AVAMET (@avamet): Aviso por rachas fuertes de viento de poniente e incremento térmico en el Vinalopó',
-        summary: 'La Asociación Valenciana de Meteorología registra máximas superiores a 34ºC en observatorios del interior de la provincia de Alicante.',
-        category: 'medio-ambiente',
-        scope: 'provincia',
-        municipality: 'Alicante',
-        isBreaking: true,
-        urgency: 'alta',
-        sourcesCount: 2,
-        sources: [
-          { source: 'AVAMET Meteorologia (@avamet)', sourceId: 'avamet', title: 'Alerta Meteorológica', link: 'https://x.com/avamet' },
-          { source: '112 CV Emergències (@GVA112)', sourceId: 'gva112', title: 'Aviso 112 CV', link: 'https://x.com/GVA112' }
-        ],
-        items: [
-          { source: 'AVAMET Meteorologia (@avamet)', title: 'Aviso por viento de poniente e incremento térmico', link: 'https://x.com/avamet' },
-          { source: '112 CV Emergències (@GVA112)', title: 'Preemergencia por viento y riesgo térmico', link: 'https://x.com/GVA112' }
-        ],
-        updates: [
-          {
-            title: '[ACTUALIZACIÓN {time}] AVAMET (@avamet): Las rachas superan los 60 km/h en Villena y Pinoso con humedad baja',
-            summary: 'AEMET Comunitat Valenciana eleva la precaución en el interior de Alicante por ráfagas secas del poniente.'
-          },
-          {
-            title: '[ACTUALIZACIÓN {time}] AVAMET (@avamet): Comienza el paulatino descenso térmico al rolar el viento a brisa costera',
-            summary: 'Los observatorios costeros de Alicante y Elche registran la entrada del viento de levante refrescando el ambiente.'
-          }
-        ]
-      },
-      {
-        prefix: 'gva-sanitat-inversion',
-        mainTitle: 'Sanitat GVA (@GVAsanitat): Inversión de 4,2 millones en el Hospital General Universitario Dr. Balmis de Alicante',
-        summary: 'Sanidad culmina la reforma integral del área de urgencias pediátricas e incorpora dos ecógrafos de última generación.',
-        category: 'municipal',
-        scope: 'alicante-ciudad',
-        municipality: 'Alicante',
-        isBreaking: false,
-        urgency: 'media',
-        sourcesCount: 2,
-        sources: [
-          { source: 'Sanitat GVA (@GVAsanitat)', sourceId: 'gva-sanitat', title: 'Nota de prensa Sanitat', link: 'https://x.com/GVAsanitat' },
-          { source: 'Diario INFORMACIÓN', sourceId: 'informacion', title: 'Mejoras en el Hospital Dr. Balmis', link: 'https://www.informacion.es' }
-        ],
-        items: [
-          { source: 'Sanitat GVA (@GVAsanitat)', title: 'Inversión de 4,2 millones en el Hospital Dr. Balmis', link: 'https://x.com/GVAsanitat' },
-          { source: 'Diario INFORMACIÓN', title: 'Nuevas urgencias pediátricas en Alicante', link: 'https://www.informacion.es' }
-        ],
-        updates: [
-          {
-            title: '[ACTUALIZACIÓN {time}] Sanitat GVA (@GVAsanitat): Las nuevas urgencias pediátricas entran en servicio con 14 boxes individuales',
-            summary: 'La Conselleria de Sanitat confirma la plena operatividad de las nuevas instalaciones médicas.'
-          }
-        ]
-      },
-      {
-        prefix: 'todoalicante-reservas',
-        mainTitle: 'Todo Alicante (@todo_alicante): Incremento récord de reservas hoteleras en la Costa Blanca para el próximo puente festivo',
-        summary: 'El sector turístico destaca una ocupación que rozará el 90% en Benidorm, Alicante y el turismo rural del interior.',
-        category: 'turismo',
-        scope: 'provincia',
-        municipality: 'Alicante',
-        isBreaking: false,
-        urgency: 'normal',
-        sourcesCount: 2,
-        sources: [
-          { source: 'Todo Alicante (@todo_alicante)', sourceId: 'todoalicante', title: 'Reportaje Ocupación', link: 'https://x.com/todo_alicante' },
-          { source: 'Turismo Alicante (@Alicante_City)', sourceId: 'alicante-city', title: 'Datos Ocupación Costa Blanca', link: 'https://x.com/Alicante_City' }
-        ],
-        items: [
-          { source: 'Todo Alicante (@todo_alicante)', title: 'Incremento récord de reservas hoteleras', link: 'https://x.com/todo_alicante' },
-          { source: 'Turismo Alicante (@Alicante_City)', title: 'Alta ocupación turística en la provincia', link: 'https://x.com/Alicante_City' }
-        ]
-      },
-      {
-        prefix: 'gva112-incendios',
-        mainTitle: '112 CV (@GVA112): El Centro de Coordinación de Emergencias establece nivel de preemergencia por riesgo de incendios',
-        summary: '112 Comunitat Valenciana aconseja extremar las precauciones en áreas forestales de la provincia ante vientos secos.',
-        category: 'emergencias',
-        scope: 'provincia',
-        municipality: 'Alicante',
-        isBreaking: true,
-        urgency: 'alta',
-        sourcesCount: 3,
-        sources: [
-          { source: '112 CV Emergències (@GVA112)', sourceId: 'gva112', title: 'Boletín Oficial 112', link: 'https://x.com/GVA112' },
-          { source: 'Generalitat Valenciana (@generalitat)', sourceId: 'generalitat-x', title: 'Nota de Prensa GVA', link: 'https://x.com/generalitat' },
-          { source: 'Diario INFORMACIÓN', sourceId: 'informacion', title: 'Riesgo Forestal', link: 'https://www.informacion.es' }
-        ],
-        items: [
-          { source: '112 CV Emergències (@GVA112)', title: 'Preemergencia nivel alto por incendios forestales', link: 'https://x.com/GVA112' },
-          { source: 'Generalitat Valenciana (@generalitat)', title: 'Aviso especial a municipios de la provincia', link: 'https://x.com/generalitat' },
-          { source: 'Diario INFORMACIÓN', title: 'Incendios: Sanidad y Emergencias piden precaución', link: 'https://www.informacion.es' }
-        ],
-        updates: [
-          {
-            title: '[ACTUALIZACIÓN {time}] 112 CV (@GVA112): Reforzadas las patrullas de vigilancia en los Parques Naturales de la provincia',
-            summary: 'El Consorcio Provincial despliega retentivas de prevención en la Mariola, Font Roja y El Montgó.'
-          }
-        ]
-      },
-      {
-        prefix: 'tram-nocturno',
-        mainTitle: 'TRAM d\'Alacant: Ferrocarrils de la Generalitat amplia el servicio nocturno de la L2 y L3 durante los fines de semana',
-        summary: 'El tranvía reforzará las frecuencias de conexión entre la Plaza de los Luceros, San Vicente y San Juan Playa.',
-        category: 'municipal',
-        scope: 'alicante-ciudad',
-        municipality: 'Alicante / San Vicente',
-        isBreaking: true,
-        urgency: 'media',
-        sourcesCount: 2,
-        sources: [
-          { source: 'Generalitat Valenciana (@generalitat)', sourceId: 'generalitat-x', title: 'Prensa TRAM d\'Alacant', link: 'https://x.com/generalitat' },
-          { source: 'Alicante Plaza', sourceId: 'alicanteplaza', title: 'Ampliación horario TRAM', link: 'https://alicanteplaza.es' }
-        ],
-        items: [
-          { source: 'Generalitat Valenciana (@generalitat)', title: 'Refuerzo de servicios nocturnos en TRAM d\'Alacant', link: 'https://x.com/generalitat' },
-          { source: 'Alicante Plaza', title: 'Tranvía nocturno en Alicante y San Juan', link: 'https://alicanteplaza.es' }
-        ]
-      },
-      {
-        prefix: 'aena-record',
-        mainTitle: 'Aeropuerto Alicante-Elche Miguel Hernández: Récord con más de 1,6 millones de pasajeros este mes',
-        summary: 'El aeródromo alicantino consolida el crecimiento de rutas internacionales con el Reino Unido, Alemania y Países Bajos.',
-        category: 'turismo',
-        scope: 'elche',
-        municipality: 'Elche / Alicante',
-        isBreaking: false,
-        urgency: 'normal',
-        sourcesCount: 3,
-        sources: [
-          { source: 'Turismo Alicante (@Alicante_City)', sourceId: 'alicante-city', title: 'Datos Aena Alicante-Elche', link: 'https://x.com/Alicante_City' },
-          { source: 'Todo Alicante (@todo_alicante)', sourceId: 'todoalicante', title: 'Cifras récord en el aeropuerto', link: 'https://x.com/todo_alicante' },
-          { source: 'Diario INFORMACIÓN', sourceId: 'informacion', title: 'Aena Alicante bate récords', link: 'https://www.informacion.es' }
-        ],
-        items: [
-          { source: 'Turismo Alicante (@Alicante_City)', title: 'Más de 1,6 millones de pasajeros en Alicante-Elche', link: 'https://x.com/Alicante_City' },
-          { source: 'Todo Alicante (@todo_alicante)', title: 'Consolidación de vuelos internacionales', link: 'https://x.com/todo_alicante' },
-          { source: 'Diario INFORMACIÓN', title: 'Tráfico aéreo récord en el Altet', link: 'https://www.informacion.es' }
-        ]
-      },
-      {
-        prefix: 'dipu-mascerca',
-        mainTitle: 'Diputación de Alicante: Aprobado el Plan Más Cerca con 30 millones de euros para obras en los 141 municipios',
-        summary: 'El pleno provincial respalda las ayudas directas para inversiones hidráulicas, viales y de alumbrado eficiente.',
-        category: 'municipal',
-        scope: 'provincia',
-        municipality: 'Alicante',
-        isBreaking: false,
-        urgency: 'normal',
-        sourcesCount: 2,
-        sources: [
-          { source: 'Diputación de Alicante', sourceId: 'diputacion', title: 'Nota Oficial Diputación', link: 'https://www.diputacionalicante.es' },
-          { source: 'COPE Alicante (@COPEAlicante)', sourceId: 'cope-alicante', title: 'Entrevista Presidente Diputación', link: 'https://x.com/COPEAlicante' }
-        ],
-        items: [
-          { source: 'Diputación de Alicante', title: '30 millones de euros para el Plan Más Cerca', link: 'https://www.diputacionalicante.es' },
-          { source: 'COPE Alicante (@COPEAlicante)', title: 'Ayudas a infraestructuras en la provincia', link: 'https://x.com/COPEAlicante' }
-        ]
-      },
-      {
-        prefix: 'speis-cascoantiguo',
-        mainTitle: 'Bomberos Ayto. Alicante (@BomberosAytoALC): Intervención en el Casco Antiguo por saneamiento de fachada',
-        summary: 'Los efectivos del SPEIS aseguran el perímetro en el centro tras desprenderse pequeños elementos ornamentales.',
-        category: 'emergencias',
-        scope: 'alicante-ciudad',
-        municipality: 'Alicante',
-        isBreaking: true,
-        urgency: 'media',
-        sourcesCount: 1,
-        sources: [{ source: 'Bomberos Ayto. Alicante (@BomberosAytoALC)', sourceId: 'bomberos-ayto-alc', title: 'Actuación SPEIS', link: 'https://x.com/BomberosAytoALC' }],
-        items: [{ source: 'Bomberos Ayto. Alicante (@BomberosAytoALC)', title: 'Saneamiento fachada en el Casco Antiguo', link: 'https://x.com/BomberosAytoALC' }],
-        updates: [
-          {
-            title: '[ACTUALIZACIÓN {time}] Bomberos Ayto. Alicante (@BomberosAytoALC): Concluidos los trabajos de consolidación del edificio y retirado el vallado',
-            summary: 'El SPEIS confirma la seguridad del tramo tras inspeccionar la fachada con el camión escala.'
-          }
-        ]
-      },
-      {
-        prefix: 'ua-biosensor',
-        mainTitle: 'Universidad de Alicante (@UA_Universidad): Desarrollan un biosensor de diagnóstico ambiental avanzado',
-        summary: 'El proyecto del Departamento de Química Analítica premia la innovación científica desarrollada en el Campus de San Vicente.',
-        category: 'educacion',
-        scope: 'san-vicente',
-        municipality: 'San Vicente del Raspeig',
-        isBreaking: false,
-        urgency: 'normal',
-        sourcesCount: 1,
-        sources: [{ source: 'Universidad de Alicante (@UA_Universidad)', sourceId: 'ua-universidad', title: 'Gabinete de Comunicación UA', link: 'https://x.com/UA_Universidad' }],
-        items: [{ source: 'Universidad de Alicante (@UA_Universidad)', title: 'Nuevo biosensor de diagnóstico ambiental', link: 'https://x.com/UA_Universidad' }]
-      },
-      {
-        prefix: 'elchecf-abonados',
-        mainTitle: 'Elche CF (@elchecf): Superados los 12.000 abonados en la primera semana de campaña franjiverde',
-        summary: 'Gran respaldo de la afición en la campaña de abonos para la nueva temporada en el Martínez Valero.',
-        category: 'deportes',
-        scope: 'elche',
-        municipality: 'Elche',
-        isBreaking: false,
-        urgency: 'normal',
-        sourcesCount: 1,
-        sources: [{ source: 'Elche CF (@elchecf)', sourceId: 'elchecf', title: 'Comunicado Oficial Elche CF', link: 'https://x.com/elchecf' }],
-        items: [{ source: 'Elche CF (@elchecf)', title: 'Campaña de abonados supera los 12.000', link: 'https://x.com/elchecf' }]
-      },
-      {
-        prefix: 'alicante-subvenciones',
-        mainTitle: 'Ayuntamiento de Alicante (@alicanteayto): Convocatoria de 1,5 millones de euros en ayudas para el comercio local',
-        summary: 'El consistorio alicantino activa fondos directos para la modernización digital y la eficiencia energética en tiendas de barrio.',
-        category: 'municipal',
-        scope: 'alicante-ciudad',
-        municipality: 'Alicante',
-        isBreaking: false,
-        urgency: 'normal',
-        sourcesCount: 2,
-        sources: [
-          { source: 'Ayuntamiento Alicante (@alicanteayto)', sourceId: 'alicanteayto-x', title: 'Junta Local Alicante', link: 'https://x.com/alicanteayto' },
-          { source: 'Turismo Alicante (@Alicante_City)', sourceId: 'alicante-city', title: 'Comercio y Turismo', link: 'https://x.com/Alicante_City' }
-        ],
-        items: [
-          { source: 'Ayuntamiento Alicante (@alicanteayto)', title: '1,5 millones para subvenciones a pymes', link: 'https://x.com/alicanteayto' },
-          { source: 'Turismo Alicante (@Alicante_City)', title: 'Apoyo a la modernización comercial', link: 'https://x.com/Alicante_City' }
-        ]
-      },
-      {
-        prefix: 'marq-exposicion',
-        mainTitle: 'MARQ Alicante (@marqalicante): Inauguración de la gran exposición internacional de arqueología mediterránea',
-        summary: 'El Museo Arqueológico de Alicante exhibe piezas inéditas procedentes de museos internacionales de primer nivel.',
-        category: 'cultura',
-        scope: 'alicante-ciudad',
-        municipality: 'Alicante',
-        isBreaking: false,
-        urgency: 'normal',
-        sourcesCount: 1,
-        sources: [{ source: 'MARQ Alicante (@marqalicante)', sourceId: 'marq-alicante', title: 'Exposiciones MARQ', link: 'https://x.com/marqalicante' }],
-        items: [{ source: 'MARQ Alicante (@marqalicante)', title: 'Inauguración de exposición internacional', link: 'https://x.com/marqalicante' }]
-      },
-      {
-        prefix: 'gva112-rescate-montaña',
-        mainTitle: '112 CV (@GVA112): El grupo de rescate provincial auxilio a dos senderistas en la Sierra de Bernia',
-        summary: 'Efectivos del Consorcio Provincial de Bomberos movilizan el helicóptero Alfa 1 tras desorientarse la pareja cerca de la cresta.',
-        category: 'emergencias',
-        scope: 'provincia',
-        municipality: 'Altea / Jalón',
-        isBreaking: true,
-        urgency: 'alta',
-        sourcesCount: 2,
-        sources: [
-          { source: '112 CV Emergències (@GVA112)', sourceId: 'gva112', title: 'Aviso de Rescate 112', link: 'https://x.com/GVA112' },
-          { source: 'Radio Alicante SER (@radioalicante)', sourceId: 'radioalicante', title: 'Última hora SER Alicante', link: 'https://x.com/radioalicante' }
-        ],
-        items: [
-          { source: '112 CV Emergències (@GVA112)', title: 'Rescate en helicóptero en Bernia', link: 'https://x.com/GVA112' },
-          { source: 'Radio Alicante SER (@radioalicante)', title: 'Intervención de emergencia en montaña', link: 'https://x.com/radioalicante' }
-        ],
-        updates: [
-          {
-            title: '[ACTUALIZACIÓN {time}] 112 CV (@GVA112): Evacuados con éxito los dos excursiones y trasladados a la helisuperficie sin heridas',
-            summary: 'El grupo de rescate de montaña concluye la intervención de evacuación preventiva.'
-          }
-        ]
-      },
-      {
-        prefix: 'puerto-cruceros',
-        mainTitle: 'Puerto de Alicante: Triple escala histórica con más de 8.500 cruceristas desembarcando en el centro',
-        summary: 'Los comercios del Casco Antiguo y el Mercado Central registran alta afluencia con la llegada de los tres buques.',
-        category: 'turismo',
-        scope: 'alicante-ciudad',
-        municipality: 'Alicante',
-        isBreaking: false,
-        urgency: 'normal',
-        sourcesCount: 2,
-        sources: [
-          { source: 'Turismo Alicante (@Alicante_City)', sourceId: 'alicante-city', title: 'Escala de Cruceros', link: 'https://x.com/Alicante_City' },
-          { source: 'Alicante Plaza', sourceId: 'alicanteplaza', title: 'Impacto económico cruceros', link: 'https://alicanteplaza.es' }
-        ],
-        items: [
-          { source: 'Turismo Alicante (@Alicante_City)', title: 'Triple escala con 8.500 visitantes', link: 'https://x.com/Alicante_City' },
-          { source: 'Alicante Plaza', title: 'Jornada de turismo de cruceros en Alicante', link: 'https://alicanteplaza.es' }
-        ]
-      },
-      {
-        prefix: 'hercules-fichaje',
-        mainTitle: 'Hércules CF: El club blanquiazul oficializa la incorporación de un nuevo delantero para la delantera',
-        summary: 'El ariete firma por dos temporadas procedente de Segunda División tras pasar el reconocimiento médico en Alicante.',
-        category: 'deportes',
-        scope: 'alicante-ciudad',
-        municipality: 'Alicante',
-        isBreaking: true,
-        urgency: 'media',
-        sourcesCount: 2,
-        sources: [
-          { source: 'COPE Alicante (@COPEAlicante)', sourceId: 'cope-alicante', title: 'Deportes COPE Alicante', link: 'https://x.com/COPEAlicante' },
-          { source: 'Diario INFORMACIÓN', sourceId: 'informacion', title: 'Mercado Hércules CF', link: 'https://www.informacion.es' }
-        ],
-        items: [
-          { source: 'COPE Alicante (@COPEAlicante)', title: 'Nuevo fichaje para el Hércules CF', link: 'https://x.com/COPEAlicante' },
-          { source: 'Diario INFORMACIÓN', title: 'Refuerzo atacante para el Rico Pérez', link: 'https://www.informacion.es' }
-        ],
-        updates: [
-          {
-            title: '[ACTUALIZACIÓN {time}] Hércules CF: Presentado oficialmente el jugador en la sala de prensa del estadio José Rico Pérez',
-            summary: 'El futbolista posa con la camiseta blanquiazul e iniciará los entrenamientos bajo las órdenes del cuerpo técnico.'
-          }
-        ]
-      },
-      {
-        prefix: 'policia-trafico',
-        mainTitle: 'Policía Local de Alicante: Dispositivo especial de tráfico por obras de renovación urbana en Alfonso El Sabio',
-        summary: 'Se habilitan desvíos alternativos recomendados por las avenidas de la Estación y Maisonnave.',
-        category: 'municipal',
-        scope: 'alicante-ciudad',
-        municipality: 'Alicante',
-        isBreaking: true,
-        urgency: 'media',
-        sourcesCount: 2,
-        sources: [
-          { source: 'Ayuntamiento Alicante (@alicanteayto)', sourceId: 'alicanteayto-x', title: 'Aviso de Tráfico', link: 'https://x.com/alicanteayto' },
-          { source: 'Radio Alicante SER', sourceId: 'radioalicante', title: 'Movilidad Urbana', link: 'https://x.com/radioalicante' }
-        ],
-        items: [
-          { source: 'Ayuntamiento Alicante (@alicanteayto)', title: 'Reordenación del tráfico en el centro', link: 'https://x.com/alicanteayto' },
-          { source: 'Radio Alicante SER', title: 'Desvíos de tráfico en Alicante', link: 'https://x.com/radioalicante' }
-        ]
-      },
-      {
-        prefix: 'salvamento-santapola',
-        mainTitle: 'Salvamento Marítimo: Interceptada una embarcación a 12 millas de la costa de Santa Pola',
-        summary: 'Cruz Roja y las fuerzas de seguridad activan el protocolo humanitario en la dársena alicantina.',
-        category: 'emergencias',
-        scope: 'provincia',
-        municipality: 'Santa Pola / Alicante',
-        isBreaking: true,
-        urgency: 'alta',
-        sourcesCount: 2,
-        sources: [
-          { source: '112 CV Emergències (@GVA112)', sourceId: 'gva112', title: 'Aviso Salvamento', link: 'https://x.com/GVA112' },
-          { source: 'Todo Alicante (@todo_alicante)', sourceId: 'todoalicante', title: 'Llegada Puerto Alicante', link: 'https://x.com/todo_alicante' }
-        ],
-        items: [
-          { source: '112 CV Emergències (@GVA112)', title: 'Embarcación auxilio frente a la costa', link: 'https://x.com/GVA112' },
-          { source: 'Todo Alicante (@todo_alicante)', title: 'Atención sanitaria en el puerto', link: 'https://x.com/todo_alicante' }
-        ]
-      },
-      {
-        prefix: 'umh-dátil',
-        mainTitle: 'Universidad Miguel Hernández (@UniversidadMH): Proyecto pionero para revalorizar los subproductos del palmeral de Elche',
-        summary: 'El equipo del Campus de Elche desarrolla materiales biodegradables compostables.',
-        category: 'educacion',
-        scope: 'elche',
-        municipality: 'Elche',
-        isBreaking: false,
-        urgency: 'normal',
-        sourcesCount: 1,
-        sources: [{ source: 'Diario INFORMACIÓN', sourceId: 'informacion', title: 'Innovación UMH Elche', link: 'https://www.informacion.es' }],
-        items: [{ source: 'Diario INFORMACIÓN', title: 'Investigación ambiental en Elche', link: 'https://www.informacion.es' }]
-      }
-    ];
+    // Chunks text to highlight town names in React
+    function renderHighlightedChunks(text, targetMun, isAlicanteMode) {
+      if (!text) return null;
+      if (!isAlicanteMode) return text;
 
-    // Helper: format current exact time string
-    const getCurrentTimeString = (d = new Date()) => {
-      return d.toLocaleTimeString('es-ES', { hour: '2-digit', minute: '2-digit' });
-    };
+      // Build regex with all Alicante towns sorted by length descending
+      const sortedTowns = [...ALICANTE_TOWNS].sort((a, b) => b.length - a.length);
+      const pattern = new RegExp(`\\b(${sortedTowns.map(escapeRegex).join('|')})\\b`, 'gi');
 
-    // Helper: Generate a guaranteed UNIQUE news item from the pool, strictly for TODAY
-    const generateNextNewsItem = (existingNewsItems = [], minutesOffset = 0) => {
-      const now = new Date(Date.now() - minutesOffset * 60000);
+      const parts = [];
+      let lastIndex = 0;
+      let match;
 
-      // Collect titles and prefixes already present in current feed state
-      const existingTitles = new Set(existingNewsItems.map(item => item.mainTitle.trim()));
-      const existingPrefixes = new Set(existingNewsItems.map(item => item.prefix || item.id.split('-')[0]));
-
-      // 1. Try unused base templates from MASTER_NEWS_TEMPLATES
-      const unusedTemplates = MASTER_NEWS_TEMPLATES.filter(
-        tmpl => !existingPrefixes.has(tmpl.prefix) && !existingTitles.has(tmpl.mainTitle.trim())
-      );
-
-      if (unusedTemplates.length > 0) {
-        const tmpl = unusedTemplates[0];
-        const uniqueId = `${tmpl.prefix}-${Date.now()}-${Math.floor(Math.random() * 10000)}`;
-
-        return {
-          id: uniqueId,
-          prefix: tmpl.prefix,
-          mainTitle: tmpl.mainTitle,
-          summary: tmpl.summary,
-          publishedAt: now.toISOString(),
-          category: tmpl.category,
-          scope: tmpl.scope,
-          municipality: tmpl.municipality,
-          isBreaking: tmpl.isBreaking,
-          urgency: tmpl.urgency,
-          sourcesCount: tmpl.sourcesCount,
-          isNew: true,
-          sources: tmpl.sources.map(s => ({ ...s, publishedAt: now.toISOString() })),
-          items: tmpl.items.map(i => ({ ...i, publishedAt: now.toISOString() }))
-        };
-      }
-
-      // 2. Try unused UPDATES of existing templates
-      const timeStr = getCurrentTimeString(now);
-      for (const tmpl of MASTER_NEWS_TEMPLATES) {
-        if (tmpl.updates && tmpl.updates.length > 0) {
-          for (const upd of tmpl.updates) {
-            const formattedTitle = upd.title.replace('{time}', timeStr);
-            if (!existingTitles.has(formattedTitle.trim())) {
-              const uniqueId = `${tmpl.prefix}-upd-${Date.now()}-${Math.floor(Math.random() * 10000)}`;
-              return {
-                id: uniqueId,
-                prefix: tmpl.prefix,
-                mainTitle: formattedTitle,
-                summary: upd.summary,
-                publishedAt: now.toISOString(),
-                category: tmpl.category,
-                scope: tmpl.scope,
-                municipality: tmpl.municipality,
-                isBreaking: true,
-                urgency: 'alta',
-                sourcesCount: tmpl.sourcesCount,
-                isNew: true,
-                sources: tmpl.sources.map(s => ({ ...s, publishedAt: now.toISOString() })),
-                items: tmpl.items.map(i => ({ ...i, publishedAt: now.toISOString() }))
-              };
-            }
-          }
+      while ((match = pattern.exec(text)) !== null) {
+        if (match.index > lastIndex) {
+          parts.push(text.substring(lastIndex, match.index));
         }
+        parts.push(
+          React.createElement(
+            'mark',
+            {
+              key: `m-${match.index}`,
+              className: 'bg-amber-400 text-slate-950 font-black px-1.5 py-0.5 rounded shadow-sm inline-block mx-0.5 border border-amber-300',
+              title: `Población: ${match[0]}`
+            },
+            `📍 ${match[0]}`
+          )
+        );
+        lastIndex = pattern.lastIndex;
       }
 
-      // 3. Fallback: Generate dynamic guaranteed unique updates for TODAY
-      const dynamicUpdates = [
-        {
-          source: '112 CV Emergències (@GVA112)',
-          sourceId: 'gva112',
-          cat: 'emergencias',
-          scope: 'provincia',
-          muni: 'Alicante',
-          title: `[ACTUALIZACIÓN ${timeStr}] 112 CV (@GVA112): Normalizada la circulación tras completarse los dispositivos preventivos`,
-          sum: 'El Centro de Coordinación de Emergencias mantiene el seguimiento informativo sin más avisos activos.'
-        },
-        {
-          source: 'Ayuntamiento Alicante (@alicanteayto)',
-          sourceId: 'alicanteayto-x',
-          cat: 'municipal',
-          scope: 'alicante-ciudad',
-          muni: 'Alicante',
-          title: `[ACTUALIZACIÓN ${timeStr}] Ayuntamiento de Alicante: Presentado el plan estival de dinamización comercial y cultural`,
-          sum: 'La Junta Local ratifica las medidas para apoyar el comercio de barrio y los mercados municipales.'
-        },
-        {
-          source: 'AVAMET Meteorologia (@avamet)',
-          sourceId: 'avamet',
-          cat: 'medio-ambiente',
-          scope: 'provincia',
-          muni: 'Alicante',
-          title: `[ACTUALIZACIÓN ${timeStr}] AVAMET (@avamet): Estabilizadas las temperaturas en todo el litoral alicantino`,
-          sum: 'La red meteorológica registra rachas suaves del sudeste manteniendo cielos despejados.'
-        },
-        {
-          source: 'TRAM d\'Alacant',
-          sourceId: 'generalitat-x',
-          cat: 'municipal',
-          scope: 'alicante-ciudad',
-          muni: 'Alicante / San Vicente',
-          title: `[ACTUALIZACIÓN ${timeStr}] TRAM d'Alacant: Alta fluidez y máximo rendimiento en las conexiones con la playa de San Juan`,
-          sum: 'Ferrocarrils de la Generalitat confirma la satisfacción de los usuarios con los servicios reforzados.'
-        }
-      ];
-
-      for (const du of dynamicUpdates) {
-        if (!existingTitles.has(du.title.trim())) {
-          const uniqueId = `dynamic-${Date.now()}-${Math.floor(Math.random() * 10000)}`;
-          return {
-            id: uniqueId,
-            prefix: 'dynamic',
-            mainTitle: du.title,
-            summary: du.sum,
-            publishedAt: now.toISOString(),
-            category: du.cat,
-            scope: du.scope,
-            municipality: du.muni,
-            isBreaking: true,
-            urgency: 'media',
-            sourcesCount: 2,
-            isNew: true,
-            sources: [
-              { source: du.source, sourceId: du.sourceId, title: 'Última Hora Oficial', link: 'https://x.com/GVA112' },
-              { source: 'Diario INFORMACIÓN', sourceId: 'informacion', title: 'Seguimiento', link: 'https://www.informacion.es' }
-            ],
-            items: [
-              { source: du.source, title: du.title, link: 'https://x.com/GVA112' },
-              { source: 'Diario INFORMACIÓN', title: du.sum, link: 'https://www.informacion.es' }
-            ]
-          };
-        }
+      if (lastIndex < text.length) {
+        parts.push(text.substring(lastIndex));
       }
 
-      // 4. Ultimate fallback if all above are already in feed
-      const fallbackId = `fallback-${Date.now()}-${Math.floor(Math.random() * 10000)}`;
-      const fallbackTitle = `[ACTUALIZACIÓN ${timeStr}] Canal Teletipos Alicante: Emisión en directo del boletín oficial del día`;
-      return {
-        id: fallbackId,
-        prefix: 'fallback',
-        mainTitle: fallbackTitle,
-        summary: 'Servicio continuo de noticias verificadas procedentes de organismos y medios oficiales de la provincia.',
-        publishedAt: now.toISOString(),
-        category: 'sociedad',
-        scope: 'provincia',
-        municipality: 'Alicante',
-        isBreaking: false,
-        urgency: 'normal',
-        sourcesCount: 1,
-        isNew: true,
-        sources: [{ source: 'Canal Oficial Teletipos', sourceId: 'gva112', title: 'Boletín del día', link: 'https://x.com/GVA112' }],
-        items: [{ source: 'Canal Oficial Teletipos', title: fallbackTitle, link: 'https://x.com/GVA112' }]
-      };
-    };
+      return parts.length > 0 ? parts : text;
+    }
 
-    // Generate initial stream with smooth staggered timestamps strictly for TODAY
-    const generateFreshNewsFeed = () => {
-      const initialList = [];
-      const offsets = [2, 6, 12, 18, 28, 40, 55, 75, 95];
-      for (let i = 0; i < offsets.length; i++) {
-        const item = generateNextNewsItem(initialList, offsets[i]);
-        item.isNew = (i === 0);
-        initialList.push(item);
-      }
-      return initialList;
-    };
-
-
+    // --- CONFIGURATION CONSTANTS ---
     const CATEGORIES = [
-      { id: 'todas', label: 'Todas las noticias', emoji: '📰' },
-      { id: 'emergencias', label: 'Emergencias 112', emoji: '🚨' },
-      { id: 'municipal', label: 'Municipal & Ayuntamientos', emoji: '🏛️' },
-      { id: 'medio-ambiente', label: 'Meteo & Medio Ambiente', emoji: '☀️' },
-      { id: 'turismo', label: 'Turismo & Comercio', emoji: '🏖️' },
-      { id: 'educacion', label: 'Educación & Ciencia', emoji: '🎓' },
-      { id: 'cultura', label: 'Cultura & Museos', emoji: '🎭' },
-      { id: 'deportes', label: 'Deportes', emoji: '⚽' }
+      { id: 'todas', label: 'Todas', emoji: '🌐' },
+      { id: 'sucesos', label: 'Sucesos y Emergencias', emoji: '🚨' },
+      { id: 'trafico', label: 'Tráfico y TRAM', emoji: '🚗' },
+      { id: 'politica', label: 'Política y Consell', emoji: '🏛️' },
+      { id: 'economia', label: 'Economía y Empleo', emoji: '💼' },
+      { id: 'turismo', label: 'Turismo Costa Blanca', emoji: '🏖️' },
+      { id: 'medio-ambiente', label: 'Tiempo y Clima (AVAMET)', emoji: '⛅' },
+      { id: 'deportes', label: 'Deportes (Hércules/Elche)', emoji: '⚽' },
+      { id: 'sanidad', label: 'Sanidad y Hospitales', emoji: '🏥' },
+      { id: 'educacion', label: 'Educación y Universidades', emoji: '🎓' },
+      { id: 'cultura', label: 'Cultura y Fiestas', emoji: '🎭' },
+      { id: 'sociedad', label: 'Sociedad', emoji: '👥' },
     ];
 
     const SCOPES = [
       { id: 'todas', label: 'Toda la Provincia' },
-      { id: 'provincia', label: 'Provincial' },
-      { id: 'alicante-ciudad', label: 'Alicante Ciudad' },
-      { id: 'elche', label: 'Elche' },
-      { id: 'san-vicente', label: 'San Vicente del Raspeig' }
+      { id: 'ciudad', label: 'Alicante Ciudad' },
+      { id: 'provincia', label: 'Municipios y Comarcas' }
     ];
 
     const TIME_RANGES = [
       { id: '2h', label: 'Últimas 2h' },
-      { id: '24h', label: 'Últimas 24h' },
-      { id: '48h', label: 'Últimas 48h' },
-      { id: '72h', label: 'Últimas 72h' }
+      { id: '24h', label: 'Hoy (24h)' },
+      { id: '48h', label: '48h' },
+      { id: '72h', label: 'Todas (72h)' }
     ];
 
-    // --- MOST RECENT NEWS CARD COMPONENT (CON COLORES RESTAURADOS) ---
-    function MostRecentNewsCard({ newsItem, theme, soundEnabled, hasNewAlert }) {
-      const isLight = theme === 'light';
-      const [flashing, setFlashing] = useState(false);
+    const OFFICIAL_SOURCE_IDS = new Set([
+      'gva112', 'bomberos-ayto-alc', 'generalitat-x', 'gva-sanitat', 'gva-cultura', 'diputacion', 'alicanteayto-x', 'alicante-city', 'ua-universidad', 'marq-alicante', 'avamet', 'apunt'
+    ]);
 
-      useEffect(() => {
-        if (hasNewAlert || newsItem?.isNew) {
-          setFlashing(true);
-          playTeletypeSound();
-          const timer = setTimeout(() => setFlashing(false), 8000);
-          return () => clearTimeout(timer);
-        }
-      }, [newsItem?.id, newsItem?.isNew, hasNewAlert]);
+    // Format ISO string to local HH:MM:SS or HH:MM
+    const formatTime = (isoString, includeSeconds = false) => {
+      if (!isoString) return '--:--';
+      try {
+        const d = new Date(isoString);
+        if (isNaN(d.getTime())) return '--:--';
+        return d.toLocaleTimeString('es-ES', {
+          hour: '2-digit',
+          minute: '2-digit',
+          second: includeSeconds ? '2-digit' : undefined
+        });
+      } catch (e) {
+        return '--:--';
+      }
+    };
 
-      if (!newsItem) return null;
+    const formatDate = (isoString) => {
+      if (!isoString) return '';
+      try {
+        const d = new Date(isoString);
+        if (isNaN(d.getTime())) return '';
+        return d.toLocaleDateString('es-ES', { day: '2-digit', month: '2-digit' });
+      } catch (e) {
+        return '';
+      }
+    };
 
-      const formatExactTime = (dateStr) => {
-        try {
-          const d = new Date(dateStr);
-          return d.toLocaleTimeString('es-ES', { hour: '2-digit', minute: '2-digit', second: '2-digit' }) + ' h';
-        } catch {
-          return 'Hace un instante';
-        }
-      };
-
-      const getTimeAgo = (dateStr) => {
-        const diffMs = Math.max(0, Date.now() - new Date(dateStr).getTime());
-        const mins = Math.floor(diffMs / 60000);
-        if (mins < 1) return 'Justo ahora';
-        if (mins === 1) return 'Hace 1 min';
-        return `Hace ${mins} mins`;
-      };
-
-      const primarySource = newsItem.sources?.[0] || { source: 'OFICIAL', link: '#' };
-      const isMultiSource = newsItem.sourcesCount > 1;
-
-      return (
-        <section className="max-w-7xl mx-auto px-4 my-4">
-          <div
-            className={`relative overflow-hidden rounded-xl border transition-all duration-500 shadow-xl ${
-              flashing
-                ? isLight
-                  ? 'bg-amber-50 border-amber-500 ring-4 ring-amber-400/40'
-                  : 'bg-gradient-to-r from-[#1e1022] via-[#121829] to-[#1a0e1c] border-[#ef4444] ring-4 ring-[#ef4444]/30'
-                : isLight
-                  ? 'bg-gradient-to-r from-slate-50 via-white to-red-50/30 border-red-200'
-                  : 'bg-gradient-to-r from-[#0d121f] via-[#0a0f18] to-[#121829] border-red-950/80 text-slate-100'
-            }`}
-          >
-            {/* Animated accent line */}
-            <div className={`h-1.5 w-full ${flashing ? 'bg-gradient-to-r from-red-600 via-amber-500 to-red-600 animate-pulse' : 'bg-[#ef4444]'}`} />
-
-            <div className="p-4 sm:p-5">
-              {/* Header bar */}
-              <div className={`flex flex-wrap items-center justify-between gap-2 border-b pb-3 mb-3 ${isLight ? 'border-slate-200' : 'border-[#1b2538]'}`}>
-                <div className="flex items-center space-x-2.5">
-                  <span className="relative flex h-3 w-3">
-                    <span className="animate-ping absolute inline-flex h-full w-full rounded-full bg-red-400 opacity-75"></span>
-                    <span className="relative inline-flex rounded-full h-3 w-3 bg-red-600"></span>
-                  </span>
-                  <h2 className={`font-mono font-black text-xs sm:text-sm tracking-wider uppercase flex items-center gap-1.5 ${isLight ? 'text-red-600' : 'text-red-500'}`}>
-                    <IconFlame className="w-4 h-4 text-red-500 animate-bounce" />
-                    NOTICIA MÁS RECIENTE
-                  </h2>
-                  {flashing && (
-                    <span className="bg-red-600 text-white text-[10px] font-extrabold px-2 py-0.5 rounded-full uppercase tracking-wider animate-pulse flex items-center gap-1">
-                      ¡ACABA DE ENTRAR!
-                    </span>
-                  )}
-                </div>
-
-                <div className="flex items-center space-x-2">
-                  <button
-                    onClick={() => playTeletypeSound()}
-                    title="Reproducir señal sonora de teletipo"
-                    className={`text-[11px] font-mono px-2.5 py-1 rounded-md border flex items-center gap-1.5 transition ${
-                      isLight
-                        ? 'bg-white hover:bg-slate-100 text-slate-800 border-slate-300'
-                        : 'bg-[#182030] hover:bg-[#202b40] text-slate-200 border-[#2d3a54]'
-                    }`}
-                  >
-                    <IconRadio className="w-3.5 h-3.5 text-red-500 animate-pulse" />
-                    <span className="font-bold">Escuchar aviso sonoro</span>
-                  </button>
-                </div>
-              </div>
-
-              {/* Grid content */}
-              <div className="grid grid-cols-1 lg:grid-cols-12 gap-4 items-start">
-                {/* Metadata Column */}
-                <div className={`lg:col-span-4 p-3.5 rounded-lg border font-mono space-y-2.5 ${
-                  isLight ? 'bg-slate-100/90 border-slate-300' : 'bg-[#060a12] border-[#1b2538]'
-                }`}>
-                  <div className={`flex items-center justify-between border-b pb-2 ${isLight ? 'border-slate-200' : 'border-[#1b2538]'}`}>
-                    <span className={`text-[11px] uppercase font-semibold flex items-center gap-1 ${
-                      isLight ? 'text-slate-500' : 'text-slate-400'
-                    }`}>
-                      <IconClock className="w-3.5 h-3.5 text-red-500" />
-                      HORA DE ENTRADA:
-                    </span>
-                    <div className="text-right">
-                      <span className={`text-sm font-extrabold block ${isLight ? 'text-red-600' : 'text-red-400'}`}>
-                        {formatExactTime(newsItem.publishedAt)}
-                      </span>
-                      <span className={`text-[10px] block ${isLight ? 'text-slate-500' : 'text-slate-400'}`}>
-                        ({getTimeAgo(newsItem.publishedAt)})
-                      </span>
-                    </div>
-                  </div>
-
-                  <div className="flex flex-col gap-1">
-                    <span className={`text-[11px] uppercase font-semibold ${
-                      isLight ? 'text-slate-500' : 'text-slate-400'
-                    }`}>
-                      MEDIO / FUENTE ORIGINAL:
-                    </span>
-                    <div className="flex items-center justify-between">
-                      <span className={`text-xs sm:text-sm font-black font-sans uppercase px-2 py-1 rounded border ${
-                        isLight
-                          ? 'bg-white text-slate-900 border-slate-300'
-                          : 'bg-[#121927] text-white border-[#2b3952]'
-                      }`}>
-                        {primarySource.source}
-                      </span>
-                      {primarySource.link && (
-                        <a
-                          href={primarySource.link}
-                          target="_blank"
-                          rel="noreferrer"
-                          className="text-xs font-bold text-red-600 hover:underline flex items-center gap-1"
-                        >
-                          <span>Ir al medio</span>
-                          <IconExternal className="w-3 h-3" />
-                        </a>
-                      )}
-                    </div>
-                  </div>
-
-                  <div className="pt-1">
-                    {isMultiSource ? (
-                      <div className={`border rounded p-2 text-[11px] font-sans font-bold flex items-center gap-1.5 ${
-                        isLight
-                          ? 'bg-emerald-500/10 border-emerald-500/30 text-emerald-700'
-                          : 'bg-emerald-500/15 border-emerald-500/40 text-emerald-400'
-                      }`}>
-                        <IconCheck className="w-4 h-4 shrink-0" />
-                        <span>CONTRASTADA EN {newsItem.sourcesCount} MEDIOS</span>
-                      </div>
-                    ) : (
-                      <div className={`border rounded p-2 text-[11px] font-sans font-bold flex items-center gap-1.5 ${
-                        isLight
-                          ? 'bg-blue-500/10 border-blue-500/30 text-blue-700'
-                          : 'bg-blue-500/10 border-blue-500/30 text-blue-400'
-                      }`}>
-                        <IconCheck className="w-4 h-4 shrink-0" />
-                        <span>FUENTE OFICIAL / VERIFICADA</span>
-                      </div>
-                    )}
-                  </div>
-                </div>
-
-                {/* Main Text Column */}
-                <div className="lg:col-span-8 space-y-2.5">
-                  <div className="flex flex-wrap items-center gap-2">
-                    <span className={`text-[10px] font-mono uppercase font-bold px-2 py-0.5 rounded ${
-                      isLight ? 'bg-red-100 text-red-800' : 'bg-red-950/80 text-red-300 border border-red-800/50'
-                    }`}>
-                      {newsItem.category}
-                    </span>
-
-                    {newsItem.municipality && (
-                      <span className={`text-[10px] font-mono px-2 py-0.5 rounded border flex items-center gap-1 ${
-                        isLight ? 'bg-slate-100 text-slate-700 border-slate-300' : 'bg-[#151c2c] text-slate-300 border-[#2b3a54]'
-                      }`}>
-                        <IconMapPin className="w-3 h-3 text-red-500" />
-                        {newsItem.municipality}
-                      </span>
-                    )}
-                  </div>
-
-                  <h3 className={`text-base sm:text-lg lg:text-xl font-extrabold leading-tight tracking-tight ${
-                    isLight ? 'text-slate-900' : 'text-white'
-                  }`}>
-                    {newsItem.mainTitle}
-                  </h3>
-
-                  {newsItem.summary && (
-                    <p className={`text-xs sm:text-sm leading-relaxed ${
-                      isLight ? 'text-slate-700' : 'text-slate-300'
-                    }`}>
-                      {newsItem.summary}
-                    </p>
-                  )}
-
-                  <div className={`pt-2 flex flex-wrap items-center gap-2 text-xs border-t ${isLight ? 'border-slate-200/60' : 'border-[#1b2538]'}`}>
-                    <span className={`text-[11px] font-mono font-bold uppercase ${
-                      isLight ? 'text-slate-500' : 'text-slate-400'
-                    }`}>
-                      Medios que cubren esta noticia:
-                    </span>
-                    <div className="flex flex-wrap items-center gap-2">
-                      {newsItem.sources.map((src, idx) => (
-                        <a
-                          key={idx}
-                          href={src.link}
-                          target="_blank"
-                          rel="noreferrer"
-                          className={`text-[11px] font-bold px-2 py-0.5 rounded border transition flex items-center gap-1 ${
-                            isLight
-                              ? 'bg-white hover:bg-slate-100 text-slate-900 border-slate-300'
-                              : 'bg-[#151d2c] hover:bg-[#1d283c] text-slate-200 border-[#2d3b52]'
-                          }`}
-                        >
-                          <span>{src.source}</span>
-                          <IconExternal className="w-2.5 h-2.5 opacity-70" />
-                        </a>
-                      ))}
-                    </div>
-                  </div>
-                </div>
-              </div>
-            </div>
-          </div>
-        </section>
-      );
-    }
-
-    // --- MAIN APPLICATION ---
+    // --- MAIN APPLICATION COMPONENT ---
     function App() {
       const [theme, setTheme] = useState(() => localStorage.getItem('teletipo_theme') || 'dark');
+      const [geoFilterMode, setGeoFilterMode] = useState(() => localStorage.getItem('teletipo_geomode') || 'alicante_provincia');
       const [onlyOfficial, setOnlyOfficial] = useState(false);
       const [selectedCategory, setSelectedCategory] = useState('todas');
       const [selectedScope, setSelectedScope] = useState('todas');
@@ -1018,10 +342,19 @@
       const [soundEnabled, setSoundEnabled] = useState(true);
       const [timeString, setTimeString] = useState('');
       const [expandedGroupId, setExpandedGroupId] = useState(null);
-      const [newsItems, setNewsItems] = useState(generateFreshNewsFeed);
       const [isRefreshing, setIsRefreshing] = useState(false);
-      const [autoStreamActive, setAutoStreamActive] = useState(true);
       const [toastMsg, setToastMsg] = useState(null);
+      const [lastSyncReport, setLastSyncReport] = useState(null);
+
+      // Real Data State from Backend
+      const [groupedNews, setGroupedNews] = useState([]);
+      const [rawNews, setRawNews] = useState([]);
+      const [highlightedNews, setHighlightedNews] = useState([]);
+      const [lastSourcesCheck, setLastSourcesCheck] = useState(null);
+      const [latestPublishedAt, setLatestPublishedAt] = useState(null);
+      const [sourceStatuses, setSourceStatuses] = useState({});
+      const [connectionStatus, setConnectionStatus] = useState('connecting');
+      const [statusMessage, setStatusMessage] = useState('Conectando con fuentes autorizadas de Alicante...');
 
       const [sectionOrder, setSectionOrder] = useState(() => {
         try {
@@ -1041,141 +374,18 @@
 
       const isLight = theme === 'light';
 
-      // Auto-stream incoming breaking news every 22 seconds without duplicates
+      // Digital Clock
       useEffect(() => {
-        if (!autoStreamActive) return;
-
-        const interval = setInterval(() => {
-          let addedTitle = '';
-          setNewsItems(prev => {
-            const newItem = generateNextNewsItem(prev, 0);
-            addedTitle = newItem.mainTitle;
-            return [newItem, ...prev];
-          });
-
-          if (soundEnabled) {
-            playTeletypeSound();
-          }
-
-          setTimeout(() => {
-            if (addedTitle) {
-              setToastMsg(`🔴 ¡NUEVO TELETIPO VERIFICADO! ${addedTitle.slice(0, 70)}...`);
-              setTimeout(() => setToastMsg(null), 6000);
-            }
-          }, 50);
-        }, 22000);
-
-        return () => clearInterval(interval);
-      }, [autoStreamActive, soundEnabled]);
-
-      // Fetch live RSS news from backend endpoint on mount
-      useEffect(() => {
-        const fetchLiveNewsFromBackend = async () => {
-          try {
-            const res = await fetch('/api/news');
-            if (res.ok) {
-              const data = await res.json();
-              if (data.news && data.news.length > 0) {
-                const liveMapped = data.news.map(n => ({
-                  id: n.id || `live-${Math.random()}`,
-                  mainTitle: n.title,
-                  summary: n.summary,
-                  publishedAt: n.publishedAt || new Date().toISOString(),
-                  category: n.category || 'sociedad',
-                  scope: n.scope || 'provincia',
-                  municipality: n.municipality || 'Alicante',
-                  isBreaking: false,
-                  urgency: 'normal',
-                  sourcesCount: 1,
-                  isNew: true,
-                  sources: [{
-                    source: n.source,
-                    sourceId: n.sourceId,
-                    title: n.title,
-                    link: n.link || 'https://www.informacion.es/alicante/'
-                  }],
-                  items: []
-                }));
-
-                setNewsItems(prev => {
-                  const liveTitles = new Set(liveMapped.map(m => m.mainTitle.trim().toLowerCase()));
-                  const filteredPrev = prev.filter(p => !liveTitles.has(p.mainTitle.trim().toLowerCase()));
-                  return [...liveMapped, ...filteredPrev];
-                });
-                setToastMsg('✅ NOTICIAS REALES EN TIEMPO REAL: Sincronizado con las fuentes y periódicos de Alicante.');
-                setTimeout(() => setToastMsg(null), 5000);
-              }
-            }
-          } catch (err) {
-            console.log('Utilizando base de datos verficada local de fuentes oficiales:', err);
-          }
+        const updateClock = () => {
+          const now = new Date();
+          setTimeString(now.toLocaleTimeString('es-ES', { hour: '2-digit', minute: '2-digit', second: '2-digit' }));
         };
-        fetchLiveNewsFromBackend();
+        updateClock();
+        const interval = setInterval(updateClock, 1000);
+        return () => clearInterval(interval);
       }, []);
 
-      // Manual Refresh Function connecting to real live RSS backend
-      const handleManualRefresh = async () => {
-        setIsRefreshing(true);
-        if (soundEnabled) playTeletypeSound();
-
-        try {
-          const res = await fetch('/api/news');
-          if (res.ok) {
-            const data = await res.json();
-            if (data.news && data.news.length > 0) {
-              const liveMapped = data.news.map(n => ({
-                id: n.id || `live-${Math.random()}`,
-                mainTitle: n.title,
-                summary: n.summary,
-                publishedAt: n.publishedAt || new Date().toISOString(),
-                category: n.category || 'sociedad',
-                scope: n.scope || 'provincia',
-                municipality: n.municipality || 'Alicante',
-                isBreaking: false,
-                urgency: 'normal',
-                sourcesCount: 1,
-                isNew: true,
-                sources: [{
-                  source: n.source,
-                  sourceId: n.sourceId,
-                  title: n.title,
-                  link: n.link || 'https://www.informacion.es/alicante/'
-                }],
-                items: []
-              }));
-
-              setNewsItems(prev => {
-                const liveTitles = new Set(liveMapped.map(m => m.mainTitle.trim().toLowerCase()));
-                const filteredPrev = prev.filter(p => !liveTitles.has(p.mainTitle.trim().toLowerCase()));
-                return [...liveMapped, ...filteredPrev];
-              });
-
-              setIsRefreshing(false);
-              setToastMsg('✅ ¡FEED ACTUALIZADO! Se han cargado noticias reales en directo de las fuentes oficiales.');
-              setTimeout(() => setToastMsg(null), 5000);
-              return;
-            }
-          }
-        } catch (e) {
-          console.log('Manual refresh live fallback:', e);
-        }
-
-        // Fallback without duplicates
-        setTimeout(() => {
-          setNewsItems(prev => {
-            const updatedPrev = prev.map(item => ({ ...item, isNew: false }));
-            const item1 = generateNextNewsItem(updatedPrev, 0);
-            const intermediateList = [item1, ...updatedPrev];
-            const item2 = generateNextNewsItem(intermediateList, 1);
-            return [item2, item1, ...updatedPrev];
-          });
-
-          setIsRefreshing(false);
-          setToastMsg('✅ ¡FEED ACTUALIZADO! Cargadas informaciones reales verificadas de Alicante.');
-          setTimeout(() => setToastMsg(null), 5000);
-        }, 650);
-      };
-
+      // Theme & GeoMode sync
       useEffect(() => {
         localStorage.setItem('teletipo_theme', theme);
         if (theme === 'dark') {
@@ -1190,20 +400,77 @@
       }, [theme]);
 
       useEffect(() => {
-        const updateClock = () => {
-          const now = new Date();
-          setTimeString(now.toLocaleTimeString('es-ES', { hour: '2-digit', minute: '2-digit', second: '2-digit' }));
-        };
-        updateClock();
-        const interval = setInterval(updateClock, 1000);
-        return () => clearInterval(interval);
-      }, []);
+        localStorage.setItem('teletipo_geomode', geoFilterMode);
+      }, [geoFilterMode]);
 
-      // Filtered News Logic
-      const filteredNews = useMemo(() => {
-        return newsItems.filter(item => {
+      // Core Live Fetch Function from Backend RSS Engine
+      const fetchLiveData = useCallback(async (isManual = false) => {
+        if (isManual) setIsRefreshing(true);
+        try {
+          const endpoint = isManual ? '/api/news/refresh' : '/api/news';
+          const options = isManual ? { method: 'POST' } : { method: 'GET' };
+          const res = await fetch(endpoint, options);
+          if (res.ok) {
+            const data = await res.json();
+            setGroupedNews(data.groupedNews || []);
+            setRawNews(data.news || []);
+            setHighlightedNews(data.highlightedNews || []);
+            setLastSourcesCheck(data.lastSourcesCheck || data.timestamp);
+            setLatestPublishedAt(data.latestPublishedAt || null);
+            setSourceStatuses(data.sourceStatuses || {});
+            setConnectionStatus(data.status || 'live');
+            setStatusMessage(data.statusMessage || 'Sincronizado con fuentes en tiempo real');
+
+            const newCount = data.newCount || 0;
+            const updatedCount = data.updatedCount || 0;
+            const checkTime = formatTime(data.lastSourcesCheck || data.timestamp, true);
+
+            if (newCount > 0) {
+              if (soundEnabled) playTeletypeSound();
+              setToastMsg(`🟢 ¡${newCount} NUEVA(S) NOTICIA(S) DETECTADA(S)! Sincronizadas a las ${checkTime}`);
+              setLastSyncReport(`🟢 Detectadas ${newCount} noticias nuevas y ${updatedCount} actualizadas a las ${checkTime}`);
+            } else if (updatedCount > 0) {
+              if (soundEnabled) playTeletypeSound();
+              setToastMsg(`🔵 ¡${updatedCount} NOTICIA(S) ACTUALIZADA(S) POR LOS MEDIOS! A las ${checkTime}`);
+              setLastSyncReport(`🔵 ${updatedCount} noticias actualizadas por los medios a las ${checkTime}`);
+            } else {
+              setLastSyncReport(`✓ Comprobación completada a las ${checkTime}. No se han detectado nuevas noticias desde la última comprobación.`);
+            }
+
+            setTimeout(() => setToastMsg(null), 7000);
+          } else {
+            setConnectionStatus('source_error');
+            setStatusMessage('Incidencia al conectar con el agregador');
+          }
+        } catch (err) {
+          console.error('Error fetching live feeds:', err);
+          setConnectionStatus('no_connection');
+          setStatusMessage('Sin conexión con el agregador de noticias');
+        } finally {
+          if (isManual) setIsRefreshing(false);
+        }
+      }, [soundEnabled]);
+
+      // Initial load & Polling every 25 seconds
+      useEffect(() => {
+        fetchLiveData(false);
+        const pollInterval = setInterval(() => {
+          fetchLiveData(false);
+        }, 25000);
+        return () => clearInterval(pollInterval);
+      }, [fetchLiveData]);
+
+      // Filtered News Items
+      const filteredGroups = useMemo(() => {
+        return groupedNews.filter(group => {
+          // Geo Filter Mode: 'generales' (all) vs 'alicante_provincia' (Alicante & towns only)
+          if (geoFilterMode === 'alicante_provincia') {
+            const isAlicante = group.isAlicanteProvincia || Boolean(group.municipality);
+            if (!isAlicante) return false;
+          }
+
           // Time filter
-          const pubTime = new Date(item.publishedAt).getTime();
+          const pubTime = new Date(group.publishedAt).getTime();
           const now = Date.now();
           const hoursDiff = (now - pubTime) / (1000 * 60 * 60);
 
@@ -1216,36 +483,31 @@
 
           // Official sources filter
           if (onlyOfficial) {
-            const isOfficial = item.sources.some(s => OFFICIAL_SOURCE_IDS.has(s.sourceId) || /ayuntamiento|diputación|generalitat|gva|bomberos|112|universidad|avamet/i.test(s.source));
+            const isOfficial = group.sources.some(s =>
+              OFFICIAL_SOURCE_IDS.has(s.sourceId) ||
+              /ayuntamiento|diputación|generalitat|gva|bomberos|112|universidad|avamet|sanitat|consell/i.test(s.source)
+            );
             if (!isOfficial) return false;
           }
 
           // Category filter
-          if (selectedCategory !== 'todas' && item.category !== selectedCategory) return false;
+          if (selectedCategory !== 'todas' && group.category !== selectedCategory) return false;
 
           // Scope filter
-          if (selectedScope !== 'todas' && item.scope !== selectedScope) return false;
+          if (selectedScope !== 'todas' && group.scope !== selectedScope) return false;
 
           // Search query
           if (searchQuery.trim()) {
             const q = searchQuery.toLowerCase();
-            const matchTitle = item.mainTitle.toLowerCase().includes(q);
-            const matchSummary = item.summary.toLowerCase().includes(q);
-            const matchMunicipality = item.municipality?.toLowerCase().includes(q);
+            const matchTitle = group.mainTitle.toLowerCase().includes(q);
+            const matchSummary = (group.summary || '').toLowerCase().includes(q);
+            const matchMunicipality = (group.municipality || '').toLowerCase().includes(q);
             return matchTitle || matchSummary || matchMunicipality;
           }
 
           return true;
         });
-      }, [newsItems, onlyOfficial, selectedCategory, selectedScope, selectedTimeRange, searchQuery]);
-
-      const absoluteMostRecent = useMemo(() => {
-        if (!newsItems || newsItems.length === 0) return null;
-        const sorted = [...newsItems].sort((a, b) => new Date(b.publishedAt).getTime() - new Date(a.publishedAt).getTime());
-        return sorted[0];
-      }, [newsItems]);
-
-      const highlightedNews = useMemo(() => filteredNews.filter(n => n.sourcesCount > 1 || n.isBreaking || n.urgency === 'alta'), [filteredNews]);
+      }, [groupedNews, geoFilterMode, onlyOfficial, selectedCategory, selectedScope, selectedTimeRange, searchQuery]);
 
       const toggleExpand = (id) => {
         setExpandedGroupId(expandedGroupId === id ? null : id);
@@ -1254,47 +516,57 @@
       return (
         <div className={`min-h-screen transition-colors font-sans ${isLight ? 'bg-slate-100 text-slate-900' : 'bg-[#050608] text-slate-100'}`}>
           
-          {/* DIGITAL CLOCK TOP BAR */}
+          {/* DIGITAL CLOCK & METADATA TOP BAR */}
           <div className={`${isLight ? 'bg-slate-200 border-slate-300 text-slate-800' : 'bg-[#050608] border-[#1e293b] text-slate-300'} px-4 py-2 border-b text-xs font-mono flex flex-wrap items-center justify-between gap-2 shadow-sm`}>
             <div className="flex items-center space-x-2">
-              <span className="relative flex h-2 w-2">
-                <span className="animate-ping absolute inline-flex h-full w-full rounded-full bg-[#ef4444] opacity-75"></span>
-                <span className="relative inline-flex rounded-full h-2 w-2 bg-[#ef4444]"></span>
+              <span className="relative flex h-2.5 w-2.5">
+                <span className="animate-ping absolute inline-flex h-full w-full rounded-full bg-emerald-400 opacity-75"></span>
+                <span className="relative inline-flex rounded-full h-2.5 w-2.5 bg-emerald-500"></span>
               </span>
               <span>
-                CENTRAL TELEGRÁFICA DE NOTICIAS DE ALICANTE{' '}
+                AGREGADOR OFICIAL DE NOTICIAS DE ALICANTE{' '}
                 <span className="text-amber-400 font-extrabold bg-amber-500/10 px-1.5 py-0.5 rounded border border-amber-500/30">
                   BY REVOX
                 </span>
               </span>
             </div>
 
-            <div className="flex items-center space-x-4">
-              <span className="bg-[#ef4444]/10 text-[#ef4444] px-2 py-0.5 rounded border border-[#ef4444]/30 font-bold">
-                EN LÍNEA
-              </span>
-              <span className="text-[#ef4444] font-black text-sm tracking-wider">
+            <div className="flex items-center space-x-3 text-[11px]">
+              {/* Distinct Verification Indicators */}
+              <div className="flex items-center space-x-1 text-slate-400">
+                <IconClock className="w-3.5 h-3.5 text-emerald-400" />
+                <span>Última comprobación: <strong className="text-emerald-400 font-bold">{formatTime(lastSourcesCheck, true)}</strong></span>
+              </div>
+              
+              {latestPublishedAt && (
+                <div className="hidden sm:flex items-center space-x-1 text-slate-400 border-l border-slate-700 pl-3">
+                  <span>Última publicación: <strong className="text-amber-400 font-bold">{formatTime(latestPublishedAt, false)} h</strong></span>
+                </div>
+              )}
+
+              <span className="text-[#ef4444] font-black text-xs tracking-wider border-l border-slate-700 pl-3">
                 {timeString}
               </span>
+
               <button
                 onClick={() => setTheme(isLight ? 'dark' : 'light')}
-                className="hover:text-amber-400 flex items-center space-x-1 transition font-bold"
+                className="hover:text-amber-400 flex items-center space-x-1 transition font-bold ml-1"
               >
                 {isLight ? <IconMoon className="w-3.5 h-3.5 text-slate-700" /> : <IconSun className="w-3.5 h-3.5 text-amber-400" />}
-                <span>{isLight ? 'Modo Oscuro' : 'Modo Claro'}</span>
+                <span className="hidden md:inline">{isLight ? 'Modo Oscuro' : 'Modo Claro'}</span>
               </button>
             </div>
           </div>
 
-          {/* TOAST BANNER FOR NEW TELETYPES */}
+          {/* TOAST BANNER FOR NEW/UPDATED TELETYPES */}
           {toastMsg && (
-            <div className="bg-gradient-to-r from-red-600 via-amber-600 to-red-600 text-white px-4 py-2 font-mono text-xs font-bold text-center flex items-center justify-center space-x-2 animate-pulse shadow-lg border-b border-amber-400 z-50 sticky top-0">
-              <span className="bg-black/40 text-white text-[10px] font-black px-2 py-0.5 rounded uppercase tracking-wider">ÚLTIMA HORA</span>
+            <div className="bg-gradient-to-r from-emerald-600 via-teal-600 to-emerald-600 text-white px-4 py-2 font-mono text-xs font-bold text-center flex items-center justify-center space-x-2 animate-pulse shadow-lg border-b border-emerald-300 z-50 sticky top-0">
+              <span className="bg-black/40 text-white text-[10px] font-black px-2 py-0.5 rounded uppercase tracking-wider">EN DIRECTO</span>
               <span className="truncate">{toastMsg}</span>
             </div>
           )}
 
-          {/* TICKER MARQUEE BANNER */}
+          {/* TICKER MARQUEE BANNER (SLOWER SPEED & PAUSE ON HOVER) */}
           <div className={`border-b shadow-lg overflow-hidden ${isLight ? 'bg-slate-900 border-slate-800 text-slate-100' : 'bg-[#030406] border-[#1e293b] text-[#e2e8f0]'}`}>
             <div className="max-w-full flex items-center h-11 relative">
               <div className="z-10 shrink-0 bg-[#ef4444] text-white px-3.5 h-full flex items-center space-x-2 font-mono font-black text-xs uppercase tracking-widest shadow-md">
@@ -1306,24 +578,28 @@
               </div>
               <div className="flex-1 overflow-hidden relative h-full flex items-center group">
                 <div className="animate-ticker flex items-center space-x-6 whitespace-nowrap">
-                  {[...filteredNews, ...filteredNews].map((item, idx) => (
-                    <a
-                      key={`${item.id}-${idx}`}
-                      href={item.sources[0]?.link || '#'}
-                      target="_blank"
-                      rel="noreferrer"
-                      className="inline-flex items-center space-x-2.5 px-3 py-1 rounded border bg-[#0d1320] hover:bg-[#162035] border-[#1e293b] text-[#e2e8f0] text-xs transition"
-                    >
-                      <span className="bg-[#ef4444] text-white text-[10px] font-mono font-black px-1.5 py-0.5 rounded">
-                        {new Date(item.publishedAt).toLocaleTimeString([], { hour: '2-digit', minute: '2-digit' })}
-                      </span>
-                      <span className="text-[10px] font-mono font-black uppercase text-amber-400 bg-amber-400/10 px-1.5 py-0.5 rounded border border-amber-400/30">
-                        {item.sources[0]?.source || 'OFICIAL'}
-                      </span>
-                      <span className="font-bold tracking-tight">{item.mainTitle}</span>
-                      <IconExternal className="w-3 h-3 text-slate-400 shrink-0" />
-                    </a>
-                  ))}
+                  {filteredGroups.length > 0 ? (
+                    [...filteredGroups, ...filteredGroups].map((item, idx) => (
+                      <a
+                        key={`${item.id}-${idx}`}
+                        href={item.sources[0]?.link || '#'}
+                        target="_blank"
+                        rel="noreferrer"
+                        className="inline-flex items-center space-x-2.5 px-3 py-1 rounded border bg-[#0d1320] hover:bg-[#162035] border-[#1e293b] text-[#e2e8f0] text-xs transition"
+                      >
+                        <span className="bg-[#ef4444] text-white text-[10px] font-mono font-black px-1.5 py-0.5 rounded">
+                          {formatTime(item.publishedAt)}
+                        </span>
+                        <span className="text-[10px] font-mono font-black uppercase text-amber-400 bg-amber-400/10 px-1.5 py-0.5 rounded border border-amber-400/30">
+                          {item.sources[0]?.source || 'OFICIAL'}
+                        </span>
+                        <span className="font-bold tracking-tight">{item.mainTitle}</span>
+                        <IconExternal className="w-3 h-3 text-slate-400 shrink-0" />
+                      </a>
+                    ))
+                  ) : (
+                    <span className="text-xs text-slate-400 px-4">Consultando fuentes oficiales en tiempo real...</span>
+                  )}
                 </div>
                 <div className="absolute right-3 z-10 hidden sm:flex items-center gap-1.5 text-[10px] font-mono font-bold text-slate-300 bg-black/80 backdrop-blur border border-slate-700/80 px-2 py-0.5 rounded shadow pointer-events-none">
                   <span className="w-1.5 h-1.5 rounded-full bg-emerald-400 animate-ping"></span>
@@ -1347,19 +623,19 @@
                     </span>
                   </div>
                   <p className="text-xs text-slate-400">
-                    Agregador de noticias reales en directo de medios y fuentes oficiales de Alicante
+                    Sistema de verificación y sincronización continua con fuentes y medios acreditados
                   </p>
                 </div>
 
                 <div className="flex flex-wrap items-center gap-2">
                   <button
-                    onClick={handleManualRefresh}
+                    onClick={() => fetchLiveData(true)}
                     disabled={isRefreshing}
                     className="bg-emerald-600 hover:bg-emerald-500 disabled:opacity-50 text-white px-3 py-1.5 rounded-sm text-[11px] font-black tracking-widest uppercase flex items-center space-x-1.5 shadow transition border border-emerald-500"
-                    title="Cargar y refrescar teletipos con las últimas novedades de Alicante"
+                    title="Realizar una nueva consulta directa a todas las fuentes autorizadas"
                   >
                     <IconRefresh className={`w-4 h-4 ${isRefreshing ? 'animate-spin' : ''}`} />
-                    <span>{isRefreshing ? 'CARGANDO...' : 'ACTUALIZAR NOTICIAS'}</span>
+                    <span>{isRefreshing ? 'CONSULTANDO FUENTES...' : 'COMPROBAR FUENTES AHORA'}</span>
                   </button>
 
                   <button
@@ -1392,25 +668,37 @@
                     className="bg-slate-800 hover:bg-slate-700 text-white px-3 py-1.5 rounded-sm text-[11px] font-bold uppercase border border-slate-700 flex items-center space-x-1"
                   >
                     <IconShield className="w-4 h-4 text-amber-400" />
-                    <span className="hidden sm:inline">FUENTES</span>
+                    <span className="hidden sm:inline">MONITOR DE FUENTES</span>
                   </button>
                 </div>
               </div>
 
-              {/* GUARANTEE OF REAL VERIFIED NEWS BANNER */}
-              <div className={`p-2.5 rounded-md border text-xs flex items-center justify-between gap-2 shadow-sm ${
+              {/* GUARANTEE & REAL STATUS BANNER */}
+              <div className={`p-2.5 rounded-md border text-xs flex flex-wrap items-center justify-between gap-2 shadow-sm ${
                 isLight ? 'bg-emerald-50 border-emerald-300 text-emerald-950' : 'bg-emerald-950/40 border-emerald-800/60 text-emerald-200'
               }`}>
                 <div className="flex items-center gap-2">
                   <span className="text-base shrink-0">🛡️</span>
                   <span className="leading-tight">
-                    <strong className="font-black uppercase tracking-wide text-emerald-500">100% NOTICIAS REALES Y CERTIFICADAS:</strong> Todas las informaciones proceden directamente de fuentes oficiales y periódicos acreditados de Alicante (Información, Alicante Plaza, 112 CV, Sanitat, Ayuntamientos, etc.). <u>Cero noticias inventadas o ficticias.</u> Cada titular incluye enlace directo a la publicación original del medio.
+                    <strong className="font-black uppercase tracking-wide text-emerald-500">100% NOTICIAS REALES Y CERTIFICADAS:</strong> Cada noticia proviene de una fuente autorizada consultada en directo. <u>Cero noticias inventadas o fechas alteradas.</u> Cada titular contiene enlace directo verificable.
                   </span>
                 </div>
-                <span className="bg-emerald-600 text-white text-[10px] font-black px-2 py-0.5 rounded uppercase tracking-wider shrink-0 hidden sm:inline-block">
-                  ✓ VERACIDAD GARANTIZADA
-                </span>
+                <div className="flex items-center gap-2">
+                  <span className="bg-emerald-600 text-white text-[10px] font-black px-2 py-0.5 rounded uppercase tracking-wider shrink-0">
+                    {connectionStatus === 'live' ? '● CONECTADO' : '● RECONECTANDO'}
+                  </span>
+                </div>
               </div>
+
+              {/* SYNC REPORT BOX */}
+              {lastSyncReport && (
+                <div className={`px-3 py-1.5 rounded text-[11px] font-mono border flex items-center justify-between ${
+                  isLight ? 'bg-slate-100 border-slate-300 text-slate-700' : 'bg-[#0a0f18] border-[#1e293b] text-slate-300'
+                }`}>
+                  <span>{lastSyncReport}</span>
+                  <span className="text-slate-400 text-[10px]">Autocheck cada 25s</span>
+                </div>
+              )}
             </div>
           </header>
 
@@ -1418,50 +706,59 @@
           <main className="max-w-7xl mx-auto p-4 space-y-6">
 
             {/* FILTER BAR */}
-            <div className={`${isLight ? 'bg-white border-slate-300' : 'bg-[#0a0f18] border-[#1e293b]'} p-4 space-y-3 rounded-xl border shadow-sm`}>
-              <div className="space-y-3">
-                
-                {/* LIVE REFRESH & AUTO-STREAM CONTROLS */}
-                <div className={`flex flex-wrap items-center justify-between gap-3 p-3 rounded-lg border ${
-                  isLight ? 'bg-amber-50/80 border-amber-300 text-slate-800' : 'bg-[#0f172a] border-amber-500/30 text-slate-100'
-                }`}>
-                  <div className="flex items-center space-x-2.5">
-                    <span className="relative flex h-2.5 w-2.5">
-                      <span className={`animate-ping absolute inline-flex h-full w-full rounded-full ${autoStreamActive ? 'bg-red-400' : 'bg-slate-500'} opacity-75`}></span>
-                      <span className={`relative inline-flex rounded-full h-2.5 w-2.5 ${autoStreamActive ? 'bg-red-500' : 'bg-slate-500'}`}></span>
-                    </span>
-                    <div>
-                      <span className="text-xs font-black uppercase tracking-wider block">
-                        TELETIPO EN DIRECTO — {autoStreamActive ? 'TRANSMISIÓN CONTINUA ACTIVA' : 'TRANSMISIÓN EN PAUSA'}
-                      </span>
-                      <span className="text-[11px] text-slate-400 block">
-                        {autoStreamActive ? 'Refrescando y cargando teletipos de Alicante automáticamente' : 'Pulsa "Cargar Noticias Nuevas" para refrescar el feed'}
-                      </span>
-                    </div>
-                  </div>
-
-                  <div className="flex items-center space-x-2">
-                    <button
-                      onClick={() => setAutoStreamActive(!autoStreamActive)}
-                      className={`px-3 py-1.5 rounded text-xs font-bold border transition ${
-                        autoStreamActive
-                          ? 'bg-red-600 text-white border-red-500'
-                          : 'bg-slate-800 text-slate-300 border-slate-700'
-                      }`}
-                    >
-                      {autoStreamActive ? '🔴 EN DIRECTO (ON)' : '⚪ PAUSADO (OFF)'}
-                    </button>
-
-                    <button
-                      onClick={handleManualRefresh}
-                      disabled={isRefreshing}
-                      className="bg-red-600 hover:bg-red-500 disabled:opacity-50 text-white px-3.5 py-1.5 rounded text-xs font-black uppercase flex items-center space-x-1.5 shadow transition border border-red-400"
-                    >
-                      <IconRefresh className={`w-3.5 h-3.5 ${isRefreshing ? 'animate-spin' : ''}`} />
-                      <span>{isRefreshing ? 'Cargando...' : 'Cargar Noticias Nuevas'}</span>
-                    </button>
-                  </div>
+            <div className={`${isLight ? 'bg-white border-slate-300' : 'bg-[#0a0f18] border-[#1e293b]'} p-4 space-y-4 rounded-xl border shadow-sm`}>
+              {/* PRIMARY GEO SELECTOR BUTTONS */}
+              <div className="space-y-1.5">
+                <div className="text-[11px] font-black uppercase tracking-wider text-slate-400 flex items-center gap-1.5">
+                  <IconMapPin className="w-3.5 h-3.5 text-[#ef4444]" />
+                  <span>Selección de Cobertura Informativa:</span>
                 </div>
+                <div className="grid grid-cols-1 sm:grid-cols-2 gap-2.5">
+                  {/* GENERALES BUTTON */}
+                  <button
+                    onClick={() => setGeoFilterMode('generales')}
+                    className={`px-4 py-3 rounded-lg text-xs font-black uppercase tracking-wider transition-all flex items-center justify-center sm:justify-start gap-2.5 border shadow-sm ${
+                      geoFilterMode === 'generales'
+                        ? isLight
+                          ? 'bg-blue-600 text-white border-blue-700 ring-2 ring-blue-400/50 shadow-md'
+                          : 'bg-blue-600 text-white border-blue-400 ring-2 ring-blue-500/50 shadow-md'
+                        : isLight
+                        ? 'bg-slate-100 hover:bg-slate-200 text-slate-700 border-slate-300'
+                        : 'bg-[#050608] hover:bg-[#0f172a] text-slate-300 border-[#1e293b]'
+                    }`}
+                  >
+                    <IconGlobe className={`w-4 h-4 ${geoFilterMode === 'generales' ? 'text-white' : 'text-blue-400'}`} />
+                    <div className="text-left">
+                      <div className="leading-tight">GENERALES</div>
+                      <div className={`text-[10px] font-normal lowercase tracking-normal ${geoFilterMode === 'generales' ? 'text-blue-100' : 'text-slate-400'}`}>
+                        Cualquier lugar / España y Mundo
+                      </div>
+                    </div>
+                  </button>
+
+                  {/* ALICANTE Y PROVINCIA BUTTON */}
+                  <button
+                    onClick={() => setGeoFilterMode('alicante_provincia')}
+                    className={`px-4 py-3 rounded-lg text-xs font-black uppercase tracking-wider transition-all flex items-center justify-center sm:justify-start gap-2.5 border shadow-sm ${
+                      geoFilterMode === 'alicante_provincia'
+                        ? 'bg-gradient-to-r from-amber-500 to-red-600 text-white border-amber-400 ring-2 ring-amber-400/60 shadow-md'
+                        : isLight
+                        ? 'bg-slate-100 hover:bg-slate-200 text-slate-700 border-slate-300'
+                        : 'bg-[#050608] hover:bg-[#0f172a] text-slate-300 border-[#1e293b]'
+                    }`}
+                  >
+                    <IconBuilding className={`w-4 h-4 ${geoFilterMode === 'alicante_provincia' ? 'text-white' : 'text-amber-400'}`} />
+                    <div className="text-left">
+                      <div className="leading-tight">ALICANTE Y PROVINCIA</div>
+                      <div className={`text-[10px] font-normal lowercase tracking-normal ${geoFilterMode === 'alicante_provincia' ? 'text-amber-100' : 'text-slate-400'}`}>
+                        Solo sucesos y noticias locales (poblaciones resaltadas)
+                      </div>
+                    </div>
+                  </button>
+                </div>
+              </div>
+
+              <div className="space-y-3 pt-1 border-t border-slate-200 dark:border-slate-800">
                 <div className={`flex flex-wrap items-center justify-between gap-3 p-2.5 rounded border ${isLight ? 'bg-slate-50 border-slate-300' : 'bg-[#050608] border-[#1e293b]'}`}>
                   
                   <button
@@ -1492,7 +789,7 @@
                     </div>
 
                     <div className="flex items-center space-x-1">
-                      <span className="text-slate-400 font-bold uppercase mr-1">Tiempo:</span>
+                      <span className="text-slate-400 font-bold uppercase mr-1">Rango:</span>
                       {TIME_RANGES.map(tr => (
                         <button
                           key={tr.id}
@@ -1549,7 +846,7 @@
 
               <div className="flex items-center space-x-3 text-xs">
                 <span className="font-mono text-slate-400">
-                  Mostrando <strong className={isLight ? 'text-slate-900' : 'text-white'}>{filteredNews.length}</strong> teletipos
+                  Mostrando <strong className={isLight ? 'text-slate-900' : 'text-white'}>{filteredGroups.length}</strong> teletipos verificados
                 </span>
               </div>
             </div>
@@ -1569,168 +866,234 @@
                       {/* Header Bar */}
                       <div className={`${
                         isLight ? 'bg-slate-200 border-slate-300 text-slate-900' : 'bg-[#1e293b] border-[#1e293b] text-white'
-                      } p-3.5 flex items-center justify-between border-b`}>
+                      } p-3.5 flex flex-wrap items-center justify-between gap-2 border-b`}>
                         <div className="flex items-center space-x-2">
                           <span className="text-[#ef4444] text-lg">🔴</span>
                           <h2 className="font-bold uppercase tracking-tight text-sm font-sans">
-                            ÚLTIMA HORA - ÚLTIMOS TELETIPOS ALICANTE
+                            {geoFilterMode === 'alicante_provincia' ? 'ÚLTIMOS TELETIPOS - ALICANTE Y PROVINCIA' : 'ÚLTIMOS TELETIPOS - GENERALES'}
                           </h2>
                         </div>
-                        <div className={`flex items-center space-x-2 text-[10px] font-mono font-bold uppercase tracking-wider ${
-                          isLight ? 'text-slate-600' : 'text-[#94a3b8]'
-                        }`}>
-                          <span className="w-2 h-2 bg-[#22c55e] rounded-full animate-pulse"></span>
-                          <span>EN DIRECTO</span>
+
+                        {/* Fast Geo Switcher in Section Header */}
+                        <div className="flex items-center space-x-2">
+                          <div className="flex items-center bg-black/20 p-0.5 rounded-lg border border-slate-700/50 text-[11px] font-bold">
+                            <button
+                              onClick={() => setGeoFilterMode('generales')}
+                              className={`px-2.5 py-1 rounded transition flex items-center gap-1 ${
+                                geoFilterMode === 'generales'
+                                  ? 'bg-blue-600 text-white shadow'
+                                  : 'text-slate-400 hover:text-white'
+                              }`}
+                            >
+                              <IconGlobe className="w-3 h-3" />
+                              <span>GENERALES</span>
+                            </button>
+                            <button
+                              onClick={() => setGeoFilterMode('alicante_provincia')}
+                              className={`px-2.5 py-1 rounded transition flex items-center gap-1 ${
+                                geoFilterMode === 'alicante_provincia'
+                                  ? 'bg-gradient-to-r from-amber-500 to-red-600 text-white shadow font-black'
+                                  : 'text-slate-400 hover:text-white'
+                              }`}
+                            >
+                              <IconBuilding className="w-3 h-3" />
+                              <span>ALICANTE Y PROVINCIA</span>
+                            </button>
+                          </div>
+
+                          <div className={`hidden sm:flex items-center space-x-2 text-[10px] font-mono font-bold uppercase tracking-wider ${
+                            isLight ? 'text-slate-600' : 'text-[#94a3b8]'
+                          }`}>
+                            <span className="w-2 h-2 bg-[#22c55e] rounded-full animate-pulse"></span>
+                            <span>TIEMPO REAL</span>
+                          </div>
                         </div>
                       </div>
 
                       {/* Feed Items */}
                       <div className={`divide-y ${isLight ? 'divide-slate-200' : 'divide-[#1e293b]'}`}>
-                        {filteredNews.map((item) => {
-                          const isGrouped = item.sourcesCount > 1;
-                          const isExpanded = expandedGroupId === item.id;
+                        {filteredGroups.length > 0 ? (
+                          filteredGroups.map((item) => {
+                            const isGrouped = item.sourcesCount > 1;
+                            const isExpanded = expandedGroupId === item.id;
 
-                          return (
-                            <article
-                              key={item.id}
-                              className={`p-4 transition ${
-                                isLight
-                                  ? item.isNew
-                                    ? 'bg-amber-50/70 border-l-4 border-l-[#ef4444]'
-                                    : 'bg-white hover:bg-slate-50'
-                                  : item.isNew
-                                    ? 'bg-[#0c1221] border-l-4 border-l-[#ef4444]'
-                                    : 'bg-[#0a0f18] hover:bg-[#0c1221]'
-                              }`}
-                            >
-                              <div className="flex flex-col sm:flex-row sm:items-start gap-3">
-                                {/* Time & Badge */}
-                                <div className="flex sm:flex-col items-center sm:items-start gap-1.5 shrink-0 sm:w-28 font-mono">
-                                  <span className="text-sm font-black text-[#ef4444]">
-                                    {new Date(item.publishedAt).toLocaleTimeString('es-ES', { hour: '2-digit', minute: '2-digit' })} h
-                                  </span>
-                                  <span className="bg-red-600/10 text-red-500 border border-red-500/20 text-[9px] font-black px-1.5 py-0.5 rounded uppercase">
-                                    HOY ({new Date(item.publishedAt).toLocaleDateString('es-ES', { day: '2-digit', month: '2-digit' })})
-                                  </span>
-                                  <span className={`text-[9px] px-2 py-0.5 rounded uppercase font-sans font-bold ${
-                                    isLight ? 'bg-slate-100 text-slate-700 border border-slate-300' : 'bg-[#1e293b] text-[#94a3b8]'
-                                  }`}>
-                                    {item.category}
-                                  </span>
-                                </div>
+                            // Distinct Status Badges
+                            let statusBadge = null;
+                            if (item.status === 'new') {
+                              statusBadge = (
+                                <span className="bg-emerald-500/20 text-emerald-400 border border-emerald-500/40 text-[9px] font-black px-1.5 py-0.5 rounded uppercase flex items-center gap-1">
+                                  <span className="w-1.5 h-1.5 rounded-full bg-emerald-400 animate-ping"></span>
+                                  NUEVA
+                                </span>
+                              );
+                            } else if (item.status === 'updated') {
+                              statusBadge = (
+                                <span className="bg-blue-500/20 text-blue-400 border border-blue-500/40 text-[9px] font-black px-1.5 py-0.5 rounded uppercase flex items-center gap-1">
+                                  <span className="w-1.5 h-1.5 rounded-full bg-blue-400"></span>
+                                  ACTUALIZADA
+                                </span>
+                              );
+                            } else {
+                              statusBadge = (
+                                <span className="bg-slate-800 text-slate-400 border border-slate-700 text-[9px] font-bold px-1.5 py-0.5 rounded uppercase">
+                                  ANTERIOR
+                                </span>
+                              );
+                            }
 
-                                {/* Body */}
-                                <div className="flex-1 min-w-0 space-y-1.5">
-                                  <div className="flex flex-wrap items-center gap-2">
-                                    <h3 className={`text-sm sm:text-base font-bold leading-snug tracking-tight ${
-                                      isLight ? 'text-slate-900' : 'text-[#e2e8f0]'
+                            return (
+                              <article
+                                key={item.id}
+                                className={`p-4 transition ${
+                                  isLight
+                                    ? item.status === 'new'
+                                      ? 'bg-emerald-50/60 border-l-4 border-l-emerald-500'
+                                      : item.status === 'updated'
+                                      ? 'bg-blue-50/60 border-l-4 border-l-blue-500'
+                                      : 'bg-white hover:bg-slate-50'
+                                    : item.status === 'new'
+                                      ? 'bg-[#08151f] border-l-4 border-l-emerald-500'
+                                      : item.status === 'updated'
+                                      ? 'bg-[#09152b] border-l-4 border-l-blue-500'
+                                      : 'bg-[#0a0f18] hover:bg-[#0c1221]'
+                                }`}
+                              >
+                                <div className="flex flex-col sm:flex-row sm:items-start gap-3">
+                                  {/* Time & Lifecycle Status */}
+                                  <div className="flex sm:flex-col items-center sm:items-start gap-1.5 shrink-0 sm:w-28 font-mono">
+                                    <span className="text-sm font-black text-[#ef4444]">
+                                      {formatTime(item.publishedAt)} h
+                                    </span>
+                                    <span className="text-[9px] font-mono text-slate-400">
+                                      {formatDate(item.publishedAt)}
+                                    </span>
+                                    {statusBadge}
+                                    <span className={`text-[9px] px-2 py-0.5 rounded uppercase font-sans font-bold ${
+                                      isLight ? 'bg-slate-100 text-slate-700 border border-slate-300' : 'bg-[#1e293b] text-[#94a3b8]'
                                     }`}>
-                                      {item.mainTitle}
-                                    </h3>
-                                    {isGrouped ? (
-                                      <span className={`border text-[9px] font-bold px-2 py-0.5 rounded flex items-center gap-1 ${
-                                        isLight
-                                          ? 'bg-emerald-500/10 text-emerald-700 border-emerald-500/30'
-                                          : 'bg-emerald-500/20 text-emerald-400 border-emerald-500/40'
-                                      }`}>
-                                        ✓ CONTRASTADA ({item.sourcesCount} MEDIOS)
-                                      </span>
-                                    ) : (
-                                      <span className="bg-[#3b82f6]/20 text-[#3b82f6] border border-[#3b82f6]/40 text-[9px] font-bold px-1.5 py-0.5 rounded">
-                                        FUENTE VERIFICADA
-                                      </span>
-                                    )}
+                                      {item.category}
+                                    </span>
+                                  </div>
+
+                                  {/* Body */}
+                                  <div className="flex-1 min-w-0 space-y-1.5">
                                     {item.municipality && (
-                                      <span className={`text-[10px] px-1.5 py-0.5 rounded border font-medium ${
-                                        isLight ? 'bg-slate-100 text-slate-700 border-slate-300' : 'bg-[#050608] text-[#94a3b8] border-[#1e293b]'
-                                      }`}>
-                                        📍 {item.municipality}
-                                      </span>
+                                      <div className="mb-1">
+                                        <span className="inline-flex items-center gap-1 font-mono font-black text-xs uppercase px-2.5 py-0.5 rounded bg-amber-400 text-slate-950 border border-amber-500 shadow-sm">
+                                          <span>📍</span>
+                                          <span>{item.municipality.toUpperCase()}</span>
+                                        </span>
+                                      </div>
                                     )}
-                                  </div>
 
-                                  {item.summary && (
-                                    <p className={`text-xs font-sans leading-relaxed ${
-                                      isLight ? 'text-slate-600' : 'text-[#94a3b8]'
-                                    }`}>
-                                      {item.summary}
-                                    </p>
-                                  )}
-
-                                  {/* Sources Links */}
-                                  <div className="pt-2.5 flex flex-wrap items-center justify-between gap-2 text-xs">
                                     <div className="flex flex-wrap items-center gap-2">
-                                      <span className={`text-[10px] font-black uppercase tracking-wider ${isLight ? 'text-slate-500' : 'text-[#64748b]'}`}>
-                                        Fuente original del medio:
-                                      </span>
-                                      {item.sources.map((src, sIdx) => (
-                                        <a
-                                          key={sIdx}
-                                          href={src.link}
-                                          target="_blank"
-                                          rel="noopener noreferrer"
-                                          className={`px-2.5 py-1 text-[11px] font-bold rounded-md border transition-all inline-flex items-center gap-1.5 shadow-sm ${
-                                            isLight
-                                              ? 'bg-red-50 hover:bg-red-100 text-red-700 border-red-300'
-                                              : 'bg-red-950/40 hover:bg-red-900/60 text-red-400 border-red-800/60'
-                                          }`}
-                                          title={`Ver publicación original en el portal web de ${src.source}`}
-                                        >
-                                          <span>🔗 Ver en {src.source}</span>
-                                          <IconExternal className="w-3 h-3 text-red-500 shrink-0" />
-                                        </a>
-                                      ))}
+                                      <h3 className={`text-sm sm:text-base font-bold leading-snug tracking-tight ${
+                                        isLight ? 'text-slate-900' : 'text-[#e2e8f0]'
+                                      }`}>
+                                        {renderHighlightedChunks(item.mainTitle, item.municipality, geoFilterMode === 'alicante_provincia')}
+                                      </h3>
+                                      {isGrouped ? (
+                                        <span className={`border text-[9px] font-bold px-2 py-0.5 rounded flex items-center gap-1 ${
+                                          isLight
+                                            ? 'bg-emerald-500/10 text-emerald-700 border-emerald-500/30'
+                                            : 'bg-emerald-500/20 text-emerald-400 border-emerald-500/40'
+                                        }`}>
+                                          ✓ CONTRASTADA ({item.sourcesCount} MEDIOS)
+                                        </span>
+                                      ) : (
+                                        <span className="bg-[#3b82f6]/20 text-[#3b82f6] border border-[#3b82f6]/40 text-[9px] font-bold px-1.5 py-0.5 rounded">
+                                          FUENTE VERIFICADA
+                                        </span>
+                                      )}
                                     </div>
 
-                                    {isGrouped && item.items && (
-                                      <button
-                                        onClick={() => toggleExpand(item.id)}
-                                        className="text-[11px] font-bold text-[#ef4444] hover:underline flex items-center gap-1"
-                                      >
-                                        <IconLayers className="w-3 h-3" />
-                                        <span>{isExpanded ? 'Ocultar comparativa' : 'Comparar titulares'}</span>
-                                        {isExpanded ? <IconChevronUp className="w-3 h-3" /> : <IconChevronDown className="w-3 h-3" />}
-                                      </button>
+                                    {item.summary && (
+                                      <p className={`text-xs font-sans leading-relaxed ${
+                                        isLight ? 'text-slate-600' : 'text-[#94a3b8]'
+                                      }`}>
+                                        {renderHighlightedChunks(item.summary, item.municipality, geoFilterMode === 'alicante_provincia')}
+                                      </p>
+                                    )}
+
+                                    {/* Direct Source Links */}
+                                    <div className="pt-2.5 flex flex-wrap items-center justify-between gap-2 text-xs">
+                                      <div className="flex flex-wrap items-center gap-2">
+                                        <span className={`text-[10px] font-black uppercase tracking-wider ${isLight ? 'text-slate-500' : 'text-[#64748b]'}`}>
+                                          Fuente original:
+                                        </span>
+                                        {item.sources.map((src, sIdx) => (
+                                          <a
+                                            key={sIdx}
+                                            href={src.link}
+                                            target="_blank"
+                                            rel="noopener noreferrer"
+                                            className={`px-2.5 py-1 text-[11px] font-bold rounded-md border transition-all inline-flex items-center gap-1.5 shadow-sm ${
+                                              isLight
+                                                ? 'bg-red-50 hover:bg-red-100 text-red-700 border-red-300'
+                                                : 'bg-red-950/40 hover:bg-red-900/60 text-red-400 border-red-800/60'
+                                            }`}
+                                            title={`Ver noticia original en el portal de ${src.source}`}
+                                          >
+                                            <span>🔗 Ver en {src.source}</span>
+                                            <IconExternal className="w-3 h-3 text-red-500 shrink-0" />
+                                          </a>
+                                        ))}
+                                      </div>
+
+                                      {isGrouped && item.items && (
+                                        <button
+                                          onClick={() => toggleExpand(item.id)}
+                                          className="text-[11px] font-bold text-[#ef4444] hover:underline flex items-center gap-1"
+                                        >
+                                          <IconLayers className="w-3 h-3" />
+                                          <span>{isExpanded ? 'Ocultar comparativa' : 'Comparar titulares'}</span>
+                                          {isExpanded ? <IconChevronUp className="w-3 h-3" /> : <IconChevronDown className="w-3 h-3" />}
+                                        </button>
+                                      )}
+                                    </div>
+
+                                    {/* Expandable Group Comparison */}
+                                    {isGrouped && isExpanded && item.items && (
+                                      <div className={`mt-3 p-3 rounded border space-y-2 text-xs ${
+                                        isLight ? 'bg-slate-50 border-slate-300' : 'bg-[#050608] border-[#1e293b]'
+                                      }`}>
+                                        <h4 className={`text-[10px] font-black text-[#ef4444] uppercase tracking-widest border-b pb-1 ${
+                                          isLight ? 'border-slate-300' : 'border-[#1e293b]'
+                                        }`}>
+                                          Comparativa de coberturas por medio:
+                                        </h4>
+                                        {item.items.map((gi, idx) => (
+                                          <div key={idx} className={`border-b pb-1.5 last:border-0 ${isLight ? 'border-slate-200' : 'border-[#0f172a]'}`}>
+                                            <div className="flex items-center justify-between mb-0.5 text-[10px]">
+                                              <span className={`font-bold uppercase ${isLight ? 'text-slate-900' : 'text-white'}`}>{gi.source}</span>
+                                              <span className={`font-mono ${isLight ? 'text-slate-500' : 'text-[#64748b]'}`}>
+                                                {formatTime(gi.publishedAt)}
+                                              </span>
+                                            </div>
+                                            <p className={`italic font-medium ${isLight ? 'text-slate-800' : 'text-[#e2e8f0]'}`}>"{gi.title}"</p>
+                                            <a
+                                              href={gi.link}
+                                              target="_blank"
+                                              rel="noreferrer"
+                                              className="inline-flex items-center space-x-1 text-[10px] text-[#ef4444] hover:underline mt-0.5 font-bold"
+                                            >
+                                              <span>Noticia completa en {gi.source}</span>
+                                              <IconExternal className="w-2.5 h-2.5" />
+                                            </a>
+                                          </div>
+                                        ))}
+                                      </div>
                                     )}
                                   </div>
-
-                                  {/* Expandable Group Comparison */}
-                                  {isGrouped && isExpanded && item.items && (
-                                    <div className={`mt-3 p-3 rounded border space-y-2 text-xs ${
-                                      isLight ? 'bg-slate-50 border-slate-300' : 'bg-[#050608] border-[#1e293b]'
-                                    }`}>
-                                      <h4 className={`text-[10px] font-black text-[#ef4444] uppercase tracking-widest border-b pb-1 ${
-                                        isLight ? 'border-slate-300' : 'border-[#1e293b]'
-                                      }`}>
-                                        Comparativa de titulares por medio de comunicación:
-                                      </h4>
-                                      {item.items.map((gi, idx) => (
-                                        <div key={idx} className={`border-b pb-1.5 last:border-0 ${isLight ? 'border-slate-200' : 'border-[#0f172a]'}`}>
-                                          <div className="flex items-center justify-between mb-0.5 text-[10px]">
-                                            <span className={`font-bold uppercase ${isLight ? 'text-slate-900' : 'text-white'}`}>{gi.source}</span>
-                                            <span className={`font-mono ${isLight ? 'text-slate-500' : 'text-[#64748b]'}`}>
-                                              {new Date(gi.publishedAt).toLocaleTimeString('es-ES', { hour: '2-digit', minute: '2-digit' })}
-                                            </span>
-                                          </div>
-                                          <p className={`italic font-medium ${isLight ? 'text-slate-800' : 'text-[#e2e8f0]'}`}>"{gi.title}"</p>
-                                          <a
-                                            href={gi.link}
-                                            target="_blank"
-                                            rel="noreferrer"
-                                            className="inline-flex items-center space-x-1 text-[10px] text-[#ef4444] hover:underline mt-0.5 font-bold"
-                                          >
-                                            <span>Noticia completa en {gi.source}</span>
-                                            <IconExternal className="w-2.5 h-2.5" />
-                                          </a>
-                                        </div>
-                                      ))}
-                                    </div>
-                                  )}
                                 </div>
-                              </div>
-                            </article>
-                          );
-                        })}
+                              </article>
+                            );
+                          })
+                        ) : (
+                          <div className="p-8 text-center text-slate-400 text-xs">
+                            No se han encontrado noticias con los filtros seleccionados. Pulsa "Comprobar fuentes ahora" para refrescar.
+                          </div>
+                        )}
                       </div>
                     </div>
                   </section>
@@ -1750,69 +1113,50 @@
                     </div>
 
                     <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-4">
-                      {highlightedNews.slice(0, 6).map((item, idx) => {
-                        const borderColors = ['border-[#ef4444]', 'border-[#3b82f6]', 'border-[#22c55e]', 'border-[#eab308]', 'border-[#a855f7]'];
-                        const categoryBadgeColors = {
-                          emergencias: 'bg-[#ef4444] text-white',
-                          municipal: 'bg-[#3b82f6] text-white',
-                          'medio-ambiente': 'bg-[#22c55e] text-white',
-                          turismo: 'bg-[#eab308] text-slate-950',
-                          deportes: 'bg-[#006837] text-white',
-                          educacion: 'bg-[#003366] text-white',
-                          cultura: 'bg-[#702459] text-white'
-                        };
-                        const borderColor = borderColors[idx % borderColors.length];
-                        const badgeColor = categoryBadgeColors[item.category] || 'bg-[#ef4444] text-white';
-
-                        return (
-                          <article
-                            key={item.id}
-                            className={`${
-                              isLight
-                                ? 'bg-white border-slate-300 shadow-md text-slate-900 hover:bg-slate-50'
-                                : 'bg-[#0f172a] shadow-lg text-white hover:bg-[#111c35]'
-                            } border-l-4 ${borderColor} border rounded-r-xl p-4 flex flex-col justify-between transition relative overflow-hidden group`}
-                          >
-                            <div>
-                              <div className="flex items-center justify-between text-xs mb-2">
-                                <span className={`text-[9px] ${badgeColor} px-2 py-0.5 font-bold uppercase tracking-wider rounded`}>
-                                  {item.category}
-                                </span>
-                                <span className={`text-[10px] font-mono font-bold ${isLight ? 'text-slate-500' : 'text-[#64748b]'}`}>
-                                  {item.sourcesCount} {item.sourcesCount === 1 ? 'MEDIO' : 'MEDIOS'}
-                                </span>
-                              </div>
-
-                              <h3 className={`text-sm font-bold leading-tight mb-2 transition ${
-                                isLight ? 'text-slate-900 group-hover:text-red-700' : 'text-white group-hover:text-[#ef4444]'
-                              }`}>
-                                {item.mainTitle}
-                              </h3>
-
-                              {item.summary && (
-                                <p className={`text-xs line-clamp-3 leading-relaxed mb-4 ${isLight ? 'text-slate-600' : 'text-[#94a3b8]'}`}>
-                                  {item.summary}
-                                </p>
-                              )}
-                            </div>
-
-                            <div className={`pt-3 border-t flex items-center justify-between text-xs ${isLight ? 'border-slate-200' : 'border-[#1e293b]'}`}>
-                              <span className={`font-mono text-[11px] ${isLight ? 'text-slate-500' : 'text-slate-400'}`}>
-                                Fuente: <strong className="text-amber-500">{item.sources[0]?.source}</strong>
+                      {highlightedNews.map((item) => (
+                        <article
+                          key={item.id}
+                          className={`p-4 rounded-xl border flex flex-col justify-between shadow-sm transition ${
+                            isLight ? 'bg-white border-slate-300 hover:shadow-md' : 'bg-[#0a0f18] border-[#1e293b] hover:border-slate-700'
+                          }`}
+                        >
+                          <div className="space-y-2">
+                            <div className="flex items-center justify-between text-xs">
+                              <span className="font-mono text-amber-500 font-bold">
+                                {formatTime(item.publishedAt)} h
                               </span>
-                              <a
-                                href={item.sources[0]?.link || '#'}
-                                target="_blank"
-                                rel="noreferrer"
-                                className="text-red-500 hover:text-red-600 font-bold underline flex items-center space-x-1"
-                              >
-                                <span>Leer</span>
-                                <IconExternal className="w-3 h-3" />
-                              </a>
+                              <span className={`text-[10px] font-bold px-1.5 py-0.5 rounded uppercase ${
+                                isLight ? 'bg-slate-100 text-slate-700' : 'bg-slate-800 text-slate-300'
+                              }`}>
+                                {item.category}
+                              </span>
                             </div>
-                          </article>
-                        );
-                      })}
+                            <h3 className={`text-sm font-bold leading-tight ${isLight ? 'text-slate-900' : 'text-white'}`}>
+                              {item.mainTitle}
+                            </h3>
+                            {item.summary && (
+                              <p className={`text-xs line-clamp-3 ${isLight ? 'text-slate-600' : 'text-slate-400'}`}>
+                                {item.summary}
+                              </p>
+                            )}
+                          </div>
+
+                          <div className="pt-3 mt-3 border-t border-slate-800/60 flex items-center justify-between text-xs">
+                            <span className={`font-mono text-[11px] ${isLight ? 'text-slate-500' : 'text-slate-400'}`}>
+                              Fuente: <strong className="text-amber-500">{item.sources[0]?.source}</strong>
+                            </span>
+                            <a
+                              href={item.sources[0]?.link || '#'}
+                              target="_blank"
+                              rel="noreferrer"
+                              className="text-red-500 hover:text-red-600 font-bold underline flex items-center space-x-1"
+                            >
+                              <span>Ver noticia</span>
+                              <IconExternal className="w-3 h-3" />
+                            </a>
+                          </div>
+                        </article>
+                      ))}
                     </div>
                   </section>
                 );
@@ -1869,10 +1213,10 @@
                 CENTRAL TELEGRÁFICA DE NOTICIAS DE ALICANTE BY REVOX
               </p>
               <p>
-                Fuentes autorizadas: 112 CV, Bomberos Alicante, GVA, Sanitat, Cultura, Diputación, Ayto Alicante, Turismo, UA, MARQ, AVAMET, INFORMACIÓN, Todo Alicante, Las Provincias, El Mundo, COPE, Cadena SER, Alicante Plaza, À Punt, Elche CF.
+                Fuentes consultadas en tiempo real: 112 CV Emergències, Bomberos Alicante, Generalitat Valenciana, Sanitat, Diputación, Ayto Alicante, Turismo Alicante, UA, MARQ, AVAMET, Diario INFORMACIÓN, Todo Alicante, Las Provincias, El Mundo CV, COPE Alicante, Cadena SER Alicante, Alicante Plaza, À Punt Mèdia, Europa Press, Agencia EFE.
               </p>
               <p className="text-[10px] opacity-70">
-                © 2026 TELETIPO ALICANTE. Todos los derechos reservados.
+                © 2026 TELETIPO ALICANTE. Verificación continua y en tiempo real de fuentes oficiales.
               </p>
             </div>
           </footer>
@@ -1911,11 +1255,12 @@
                     <span className="bg-red-600 text-white font-black text-xs px-3 py-1 rounded uppercase tracking-widest inline-block mb-4">
                       ⭐ DESTACADA DE HOY
                     </span>
-                    <h2 className="text-2xl font-black text-white mb-4">{filteredNews[0]?.mainTitle}</h2>
-                    <p className="text-sm text-slate-300 leading-relaxed">{filteredNews[0]?.summary}</p>
+                    <h2 className="text-2xl font-black text-white mb-4">{filteredGroups[0]?.mainTitle}</h2>
+                    <p className="text-sm text-slate-300 leading-relaxed">{filteredGroups[0]?.summary}</p>
                   </div>
-                  <div className="pt-4 border-t border-slate-800 text-xs text-slate-400">
-                    Fuente: <strong className="text-amber-400">{filteredNews[0]?.sources[0]?.source}</strong>
+                  <div className="pt-4 border-t border-slate-800 text-xs text-slate-400 flex items-center justify-between">
+                    <span>Fuente: <strong className="text-amber-400">{filteredGroups[0]?.sources[0]?.source}</strong></span>
+                    <span>{formatTime(filteredGroups[0]?.publishedAt)} h</span>
                   </div>
                 </div>
 
@@ -1924,15 +1269,18 @@
                     🔴 TELETIPO ÚLTIMA HORA EN TIEMPO REAL
                   </h3>
                   <div className="flex-1 overflow-y-auto space-y-3 pr-2">
-                    {filteredNews.map(g => (
+                    {filteredGroups.map(g => (
                       <div key={g.id} className="bg-slate-900 border border-slate-800 p-4 rounded-xl">
                         <div className="flex items-center justify-between text-xs mb-1">
                           <span className="font-mono text-amber-400 font-bold">
-                            {new Date(g.publishedAt).toLocaleTimeString('es-ES', { hour: '2-digit', minute: '2-digit' })}
+                            {formatTime(g.publishedAt)}
                           </span>
                           <span className="bg-slate-800 text-slate-300 font-bold px-2 py-0.5 rounded uppercase text-[10px]">{g.category}</span>
                         </div>
                         <h4 className="font-bold text-white text-base">{g.mainTitle}</h4>
+                        <div className="mt-2 text-[11px] text-slate-400">
+                          {g.sources[0]?.source}
+                        </div>
                       </div>
                     ))}
                   </div>
@@ -1970,32 +1318,39 @@
           {/* ESCALETA MODAL */}
           {showEscaleta && (
             <EscaletaModal
-              news={filteredNews}
+              news={filteredGroups}
               onClose={() => setShowEscaleta(false)}
             />
           )}
 
-          {/* SOURCES MODAL */}
+          {/* SOURCES MONITOR MODAL WITH LIVE STATUS */}
           {showSources && (
             <div className="fixed inset-0 z-50 bg-black/80 flex items-center justify-center p-4">
               <div className="bg-[#0a0f18] border border-[#1e293b] p-6 rounded-xl max-w-2xl w-full text-white space-y-4 max-h-[85vh] flex flex-col">
                 <div className="flex items-center justify-between border-b border-slate-800 pb-3">
-                  <h3 className="font-bold text-lg">Fuentes Autorizadas y Redes Oficiales (21 Medios)</h3>
+                  <div>
+                    <h3 className="font-bold text-lg">Monitor de Fuentes Oficiales y Medios</h3>
+                    <p className="text-xs text-slate-400">Estado de sincronización en tiempo real con las fuentes de Alicante</p>
+                  </div>
                   <button onClick={() => setShowSources(false)} className="text-slate-400 hover:text-white font-bold"><IconX className="w-5 h-5"/></button>
                 </div>
                 <div className="space-y-2 text-xs flex-1 overflow-y-auto pr-1">
-                  {INITIAL_SOURCES.map(src => (
-                    <div key={src.id} className="p-2.5 bg-slate-900 border border-slate-800 rounded flex items-center justify-between">
-                      <div className="flex items-center space-x-2">
-                        <span className="font-mono font-bold text-amber-400">[{src.type.toUpperCase()}]</span>
-                        <span className="font-semibold">{src.name}</span>
+                  {Object.keys(sourceStatuses).length > 0 ? (
+                    Object.entries(sourceStatuses).map(([srcId, st]) => (
+                      <div key={srcId} className="p-2.5 bg-slate-900 border border-slate-800 rounded flex items-center justify-between">
+                        <div className="flex items-center space-x-2">
+                          <span className={`w-2 h-2 rounded-full ${st.ok ? 'bg-emerald-400' : 'bg-amber-500'}`}></span>
+                          <span className="font-semibold uppercase">{srcId}</span>
+                        </div>
+                        <div className="flex items-center space-x-3 text-slate-400 font-mono">
+                          <span>{st.ok ? `${st.count} noticias activas` : 'Incidencia temporal'}</span>
+                          <span className="text-[10px] text-slate-500">{formatTime(st.lastChecked, true)}</span>
+                        </div>
                       </div>
-                      <a href={src.websiteUrl} target="_blank" rel="noreferrer" className="text-emerald-400 hover:underline font-mono font-bold flex items-center space-x-1">
-                        <span>Ver Canal</span>
-                        <IconExternal className="w-3 h-3" />
-                      </a>
-                    </div>
-                  ))}
+                    ))
+                  ) : (
+                    <div className="text-center p-4 text-slate-400">Cargando estado de las fuentes...</div>
+                  )}
                 </div>
               </div>
             </div>
@@ -2038,7 +1393,7 @@
       const year = now.getFullYear();
 
       const timeSpoken = `Son las ${hours} ${hours === 1 ? 'hora' : 'horas'} y ${minutes === 0 ? 'en punto' : minutes === 1 ? 'un minuto' : `${minutes} minutos`} del ${dayName}, ${dayNumber} de ${monthName} de ${year}`;
-      const introScript = `${timeSpoken}. Emite Central Telegráfica de Noticias de Alicante. Presentamos el boletín informativo con la actualidad más importante de Alicante y provincia en estos últimos minutos.`;
+      const introScript = `${timeSpoken}. Emite Central Telegráfica de Noticias de Alicante. Presentamos el boletín informativo con la actualidad verificada de Alicante y provincia.`;
 
       const newsScripts = topNews.map((group, i) => ({
         index: i + 1,
@@ -2046,7 +1401,7 @@
         spokenText: `${group.mainTitle}. ${group.summary || ''}. Información contrastada por ${group.sources[0]?.source || 'fuente oficial'}.`
       }));
 
-      const outroScript = "Hasta aquí las principales noticias en este boletín de noticias de Alicante. Gracias por su atención y sigan informados de las ultimas noticias en nuestro teletipo en tiempo real. Gracias por escucharnos.";
+      const outroScript = "Hasta aquí las principales noticias en este boletín informativo de Alicante. Continúen informados en tiempo real en nuestra Central de Teletipos. Gracias por su sintonía.";
 
       const fullText = [introScript, ...newsScripts.map(n => n.spokenText), outroScript].join(' ');
 
@@ -2298,34 +1653,29 @@
                     </div>
 
                     <div className="flex items-center space-x-2 shrink-0">
-                      {/* Order Up/Down */}
                       <button
-                        disabled={index === 0}
                         onClick={() => moveSection(index, -1)}
-                        className="p-1 rounded bg-slate-800 hover:bg-slate-700 disabled:opacity-30 disabled:hover:bg-slate-800 text-slate-200"
+                        disabled={index === 0}
+                        className="p-1 rounded bg-slate-800 hover:bg-slate-700 disabled:opacity-30 text-slate-300"
                         title="Mover arriba"
                       >
                         <IconChevronUp className="w-4 h-4" />
                       </button>
                       <button
-                        disabled={index === sectionOrder.length - 1}
                         onClick={() => moveSection(index, 1)}
-                        className="p-1 rounded bg-slate-800 hover:bg-slate-700 disabled:opacity-30 disabled:hover:bg-slate-800 text-slate-200"
+                        disabled={index === sectionOrder.length - 1}
+                        className="p-1 rounded bg-slate-800 hover:bg-slate-700 disabled:opacity-30 text-slate-300"
                         title="Mover abajo"
                       >
                         <IconChevronDown className="w-4 h-4" />
                       </button>
-
-                      {/* Toggle Visibility */}
                       <button
                         onClick={() => onToggleVisibility(key)}
-                        className={`px-2.5 py-1 rounded text-[11px] font-bold uppercase transition border ${
-                          isVisible
-                            ? 'bg-emerald-500/20 text-emerald-400 border-emerald-500/40'
-                            : 'bg-red-500/20 text-red-400 border-red-500/40'
+                        className={`px-2.5 py-1 rounded text-[11px] font-bold border transition ${
+                          isVisible ? 'bg-emerald-600/30 text-emerald-400 border-emerald-500/50' : 'bg-slate-800 text-slate-400 border-slate-700'
                         }`}
                       >
-                        {isVisible ? 'MOSTRAR' : 'OCULTO'}
+                        {isVisible ? 'Visible' : 'Oculto'}
                       </button>
                     </div>
                   </div>
@@ -2333,19 +1683,19 @@
               })}
             </div>
 
-            {/* Footer Controls */}
-            <div className="p-4 bg-slate-950 border-t border-slate-800/80 flex items-center justify-between">
+            {/* Footer buttons */}
+            <div className="p-4 bg-slate-950 border-t border-slate-800 flex items-center justify-between">
               <button
                 onClick={onReset}
-                className="text-xs text-slate-400 hover:text-amber-400 underline font-medium"
+                className="text-xs text-slate-400 hover:text-white underline font-mono"
               >
-                Restablecer orden inicial
+                Restablecer por defecto
               </button>
               <button
                 onClick={onClose}
-                className="bg-amber-500 hover:bg-amber-400 text-black px-5 py-2 rounded-lg text-xs font-black uppercase tracking-wider shadow"
+                className="bg-amber-500 hover:bg-amber-400 text-black px-4 py-1.5 rounded-lg text-xs font-black uppercase shadow"
               >
-                Guardar y cerrar
+                Guardar y Cerrar
               </button>
             </div>
 
@@ -2354,7 +1704,7 @@
       );
     }
 
-    // Render App
+    // Render the React application
     ReactDOM.createRoot(document.getElementById('root')).render(<App />);
   </script>
 </body>
