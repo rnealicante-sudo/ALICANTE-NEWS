@@ -1,6 +1,0 @@
-{
-  "name": "ÚLTIMOS TELETIPOS ALICANTE",
-  "description": "Central de noticias en tiempo real sobre Alicante y su provincia con teletipo, agrupación de fuentes, noticias destacadas, modo redacción y radio.",
-  "requestFramePermissions": [],
-  "majorCapabilities": ["MAJOR_CAPABILITY_SERVER_SIDE_GEMINI_API"]
-}
