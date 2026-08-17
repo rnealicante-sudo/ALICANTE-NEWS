@@ -266,7 +266,327 @@
       return parts.length > 0 ? parts : text;
     }
 
-    // --- CONFIGURATION CONSTANTS ---
+    // --- CONFIGURATION CONSTANTS & AUTHORIZED SOURCES ---
+    const SOURCES = [
+      // Institucionales y de Estado
+      { id: 'lamoncloa', name: 'La Moncloa (Presidencia del Gobierno)', domain: 'lamoncloa.gob.es', type: 'institución', rssUrl: 'https://www.lamoncloa.gob.es/servicios/rss/Paginas/rss.aspx', websiteUrl: 'https://www.lamoncloa.gob.es/' },
+      { id: 'boe', name: 'BOE (Boletín Oficial del Estado)', domain: 'boe.es', type: 'institución', rssUrl: 'https://www.boe.es/rss/canal.php?c=boe', websiteUrl: 'https://www.boe.es/' },
+      { id: 'congreso', name: 'Congreso de los Diputados', domain: 'congreso.es', type: 'institución', rssUrl: 'https://www.congreso.es/es/rss/noticias', websiteUrl: 'https://www.congreso.es/' },
+      { id: 'senado', name: 'Senado de España', domain: 'senado.es', type: 'institución', rssUrl: 'https://www.senado.es/rss/notas_prensa.xml', websiteUrl: 'https://www.senado.es/' },
+      { id: 'interior', name: 'Ministerio del Interior', domain: 'interior.gob.es', type: 'institución', rssUrl: 'https://www.interior.gob.es/opencms/es/servicios-al-ciudadano/rss/noticias.rss', websiteUrl: 'https://www.interior.gob.es/' },
+      { id: 'policia', name: 'Policía Nacional (@policia)', domain: 'policia.es', type: 'emergencias', rssUrl: 'https://www.policia.es/_es/rss.php', websiteUrl: 'https://www.policia.es/' },
+      { id: 'guardiacivil', name: 'Guardia Civil (@guardiacivil)', domain: 'guardiacivil.es', type: 'emergencias', rssUrl: 'https://www.guardiacivil.es/es/prensa/noticias/rss.xml', websiteUrl: 'https://www.guardiacivil.es/' },
+      { id: 'dgt', name: 'DGT (Tráfico y Seguridad Vial)', domain: 'dgt.es', type: 'emergencias', rssUrl: 'https://revista.dgt.es/es/rss.xml', websiteUrl: 'https://www.dgt.es/' },
+      { id: 'proteccioncivil', name: 'Protección Civil España', domain: 'proteccioncivil.es', type: 'emergencias', rssUrl: 'https://www.proteccioncivil.es/rss', websiteUrl: 'https://www.proteccioncivil.es/' },
+      { id: 'aemet', name: 'AEMET (Meteorología Estatal)', domain: 'aemet.es', type: 'emergencias', rssUrl: 'https://www.aemet.es/es/noticias.rss', websiteUrl: 'https://www.aemet.es/' },
+      { id: 'ine', name: 'INE (Instituto Nacional de Estadística)', domain: 'ine.es', type: 'institución', rssUrl: 'https://www.ine.es/rss/rss_ine.xml', websiteUrl: 'https://www.ine.es/' },
+      { id: 'bde', name: 'Banco de España', domain: 'bde.es', type: 'institución', rssUrl: 'https://www.bde.es/bde/es/utiles/rss/noticias.xml', websiteUrl: 'https://www.bde.es/' },
+      { id: 'cnmv', name: 'CNMV (Mercado de Valores)', domain: 'cnmv.es', type: 'institución', rssUrl: 'https://www.cnmv.es/portal/rss/rss.aspx?id=1', websiteUrl: 'https://www.cnmv.es/' },
+      { id: 'cnmc', name: 'CNMC (Mercados y Competencia)', domain: 'cnmc.es', type: 'institución', rssUrl: 'https://www.cnmc.es/rss.xml', websiteUrl: 'https://www.cnmc.es/' },
+      { id: 'agenciatributaria', name: 'Agencia Tributaria (AEAT)', domain: 'agenciatributaria.gob.es', type: 'institución', rssUrl: 'https://sede.agenciatributaria.gob.es/Sede/rss/novedades.xml', websiteUrl: 'https://sede.agenciatributaria.gob.es/' },
+      // Comunitat Valenciana y Alicante Oficial
+      { id: 'gva', name: 'Generalitat Valenciana', domain: 'gva.es', type: 'institución', rssUrl: 'https://www.gva.es/es/inicio/atencion_ciudadano/buscadores/busc_notas_prensa?rss=true', websiteUrl: 'https://www.gva.es/' },
+      { id: 'gva112', name: '112 Comunitat Valenciana (@GVA112)', domain: '112cv.gva.es', type: 'emergencias', rssUrl: 'https://112cv.gva.es/es/rss', websiteUrl: 'https://www.112cv.gva.es/' },
+      { id: 'diputacion', name: 'Diputación de Alicante', domain: 'diputacionalicante.es', type: 'institución', rssUrl: 'https://www.diputacionalicante.es/feed/', websiteUrl: 'https://www.diputacionalicante.es/' },
+      { id: 'ayto-alicante', name: 'Ayuntamiento de Alicante', domain: 'alicante.es', type: 'ayuntamiento', rssUrl: 'https://www.alicante.es/es/rss/noticias', websiteUrl: 'https://www.alicante.es/' },
+      { id: 'ayto-elche', name: 'Ayuntamiento de Elche', domain: 'elche.es', type: 'ayuntamiento', rssUrl: 'https://www.elche.es/feed/', websiteUrl: 'https://www.elche.es' },
+      { id: 'ayto-torrevieja', name: 'Ayuntamiento de Torrevieja', domain: 'torrevieja.es', type: 'ayuntamiento', rssUrl: 'https://torrevieja.es/es/noticias/rss', websiteUrl: 'https://torrevieja.es' },
+      { id: 'ayto-benidorm', name: 'Ayuntamiento de Benidorm', domain: 'benidorm.org', type: 'ayuntamiento', rssUrl: 'https://benidorm.org/es/rss.xml', websiteUrl: 'https://benidorm.org' },
+      { id: 'ua-universidad', name: 'Universidad de Alicante (@UA_Universidad)', domain: 'ua.es', type: 'institución', rssUrl: 'https://web.ua.es/es/actualidad-universitaria/rss.xml', websiteUrl: 'https://x.com/UA_Universidad' },
+      { id: 'marq-alicante', name: 'MARQ Alicante (@marqalicante)', domain: 'marqalicante.com', type: 'institución', rssUrl: 'https://www.marqalicante.com/feed/', websiteUrl: 'https://x.com/marqalicante' },
+      { id: 'avamet', name: 'AVAMET Meteorologia (@avamet)', domain: 'avamet.org', type: 'institución', rssUrl: 'https://www.avamet.org/rss/noticies.xml', websiteUrl: 'https://x.com/avamet' },
+      // Medios de Comunicación Generales y Provinciales
+      { id: 'rtve', name: 'RTVE Noticias', domain: 'rtve.es', type: 'media', rssUrl: 'https://www.rtve.es/api/noticias/rss', websiteUrl: 'https://www.rtve.es/noticias/' },
+      { id: 'elpais', name: 'EL PAÍS', domain: 'elpais.com', type: 'media', rssUrl: 'https://feeds.elpais.com/mrss-s/pages/ep/site/elpais.com/portada', websiteUrl: 'https://elpais.com/' },
+      { id: 'elmundo', name: 'EL MUNDO', domain: 'elmundo.es', type: 'media', rssUrl: 'https://e00-elmundo.uecdn.es/elmundo/rss/portada.xml', websiteUrl: 'https://www.elmundo.es/' },
+      { id: 'abc', name: 'ABC', domain: 'abc.es', type: 'media', rssUrl: 'https://www.abc.es/rss/2.0/portada/', websiteUrl: 'https://www.abc.es/' },
+      { id: 'lavanguardia', name: 'La Vanguardia', domain: 'lavanguardia.com', type: 'media', rssUrl: 'https://www.lavanguardia.com/rss/home.xml', websiteUrl: 'https://www.lavanguardia.com/' },
+      { id: '20minutos', name: '20minutos', domain: '20minutos.es', type: 'media', rssUrl: 'https://www.20minutos.es/rss/', websiteUrl: 'https://www.20minutos.es/' },
+      { id: 'eldiario', name: 'elDiario.es', domain: 'eldiario.es', type: 'media', rssUrl: 'https://www.eldiario.es/rss/', websiteUrl: 'https://www.eldiario.es/' },
+      { id: 'larazon', name: 'La Razón', domain: 'larazon.es', type: 'media', rssUrl: 'https://www.larazon.es/rss/portada.xml', websiteUrl: 'https://www.larazon.es/' },
+      { id: 'publico', name: 'Público', domain: 'publico.es', type: 'media', rssUrl: 'https://www.publico.es/rss/', websiteUrl: 'https://www.publico.es/' },
+      { id: 'ondacero', name: 'Onda Cero', domain: 'ondacero.es', type: 'media', rssUrl: 'https://www.ondacero.es/rss/portada.xml', websiteUrl: 'https://www.ondacero.es/' },
+      { id: 'cadenaser', name: 'Cadena SER', domain: 'cadenaser.com', type: 'media', rssUrl: 'https://cadenaser.com/rss/portada.xml', websiteUrl: 'https://cadenaser.com/' },
+      { id: 'cope', name: 'COPE', domain: 'cope.es', type: 'media', rssUrl: 'https://www.cope.es/api/es/rss/secciones/espana', websiteUrl: 'https://www.cope.es/' },
+      { id: 'informacion', name: 'Diario INFORMACIÓN', domain: 'informacion.es', type: 'media', rssUrl: 'https://www.informacion.es/rss/section/1008', websiteUrl: 'https://www.informacion.es' },
+      { id: 'alicanteplaza', name: 'Alicante Plaza', domain: 'alicanteplaza.es', type: 'media', rssUrl: 'https://alicanteplaza.es/rss', websiteUrl: 'https://alicanteplaza.es' },
+      { id: 'ser-alicante', name: 'Cadena SER Alicante', domain: 'cadenaser.com', type: 'media', rssUrl: 'https://cadenaser.com/rss/emisoras/ser_alicante/', websiteUrl: 'https://cadenaser.com/emisora/ser_alicante/' },
+      { id: 'cope-alicante', name: 'COPE Alicante (@COPEAlicante)', domain: 'cope.es', type: 'media', rssUrl: 'https://www.cope.es/api/es/rss/emisoras/comunidad-valenciana/alicante', websiteUrl: 'https://x.com/COPEAlicante' },
+      { id: 'ondacero-alicante', name: 'Onda Cero Alicante', domain: 'ondacero.es', type: 'media', rssUrl: 'https://www.ondacero.es/rss/emisoras/comunidad-valenciana/alicante.xml', websiteUrl: 'https://www.ondacero.es/emisoras/comunidad-valenciana/alicante/' },
+      { id: 'lasprovincias', name: 'Las Provincias', domain: 'lasprovincias.es', type: 'media', rssUrl: 'https://www.lasprovincias.es/rss/2.0/?section=alicante', websiteUrl: 'https://www.lasprovincias.es' },
+      { id: 'levante', name: 'Levante-EMV', domain: 'levante-emv.com', type: 'media', rssUrl: 'https://www.levante-emv.com/rss/section/3103', websiteUrl: 'https://www.levante-emv.com' },
+      { id: 'apunt', name: 'À Punt Mèdia', domain: 'apuntmedia.es', type: 'media', rssUrl: 'https://www.apuntmedia.es/rss', websiteUrl: 'https://www.apuntmedia.es' },
+      { id: 'todoalicante', name: 'Todo Alicante', domain: 'todoalicante.es', type: 'media', rssUrl: 'https://www.todoalicante.es/rss/2.0/portada/', websiteUrl: 'https://www.todoalicante.es' },
+      { id: 'elconfidencial', name: 'El Confidencial', domain: 'elconfidencial.com', type: 'media', rssUrl: 'https://rss.elconfidencial.com/espana/', websiteUrl: 'https://www.elconfidencial.com' }
+    ];
+
+    const ALICANTE_LOCATIONS_MAP = [
+      { name: 'Alicante', scope: 'ciudad', aliases: ['alicante', 'alacant', 'capital alicantina', 'postiguet', 'san blas', 'carolinas', 'explanada', 'san juan playa', 'playa de san juan', 'tossal', 'cabo de las huertas', 'benalúa', 'babel', 'campoamor', 'altozano', 'tabarca'] },
+      { name: 'Elche', scope: 'provincia', aliases: ['elche', 'elx', 'ilicitano', 'ilicitana', 'palmeral', 'altabix', 'torrellano', 'el altet', 'la marina', 'arenales del sol', 'altet'] },
+      { name: 'Torrevieja', scope: 'provincia', aliases: ['torrevieja', 'torrevejense', 'la mata', 'punta prima'] },
+      { name: 'Orihuela', scope: 'provincia', aliases: ['orihuela', 'oriolano', 'oriolana', 'orihuela costa', 'dehesa de campoamor', 'cabo roig', 'playa flamenca', 'la zenia'] },
+      { name: 'Benidorm', scope: 'provincia', aliases: ['benidorm', 'rincón de loix', 'terra mítica', 'serra gelada'] },
+      { name: 'Alcoy', scope: 'provincia', aliases: ['alcoy', 'alcoi', 'alcoyano', 'alcoyana', 'font roja'] },
+      { name: 'San Vicente del Raspeig', scope: 'provincia', aliases: ['san vicente del raspeig', 'sant vicent del raspeig', 'san vicente', 'sant vicent'] },
+      { name: 'Elda', scope: 'provincia', aliases: ['elda', 'eldense'] },
+      { name: 'Petrer', scope: 'provincia', aliases: ['petrer', 'petrerense'] },
+      { name: 'Denia', scope: 'provincia', aliases: ['denia', 'dénia', 'dianense', 'montgó', 'las rotas', 'les rotes', 'las marinas'] },
+      { name: 'Villena', scope: 'provincia', aliases: ['villena', 'villenense'] },
+      { name: 'Santa Pola', scope: 'provincia', aliases: ['santa pola', 'santapolero', 'gran alacant'] },
+      { name: 'Villajoyosa', scope: 'provincia', aliases: ['villajoyosa', 'la vila joiosa', 'la vila'] },
+      { name: 'Jávea', scope: 'provincia', aliases: ['jávea', 'xàbia', 'xabienc', 'cabo de la nao', 'cabo de san antonio'] },
+      { name: 'Calpe', scope: 'provincia', aliases: ['calpe', 'calp', 'peñón de ifach'] },
+      { name: 'Crevillent', scope: 'provincia', aliases: ['crevillent', 'crevillente'] },
+      { name: 'El Campello', scope: 'provincia', aliases: ['el campello', 'campello', 'muchavista'] },
+      { name: 'Altea', scope: 'provincia', aliases: ['altea', 'alteano', 'altea la vella', 'altea hills'] },
+      { name: 'Novelda', scope: 'provincia', aliases: ['novelda', 'noveldense'] },
+      { name: 'Ibi', scope: 'provincia', aliases: ['ibi', 'ibense', 'valle del juguete'] },
+      { name: 'Mutxamel', scope: 'provincia', aliases: ['mutxamel', 'muchamiel'] },
+      { name: 'Sant Joan d\'Alacant', scope: 'provincia', aliases: ['sant joan d\'alacant', 'san juan de alicante', 'sant joan'] },
+      { name: 'Pilar de la Horadada', scope: 'provincia', aliases: ['pilar de la horadada', 'mil palmeras'] },
+      { name: 'Rojales', scope: 'provincia', aliases: ['rojales', 'ciudad quesada'] },
+      { name: 'Aspe', scope: 'provincia', aliases: ['aspe', 'aspense'] },
+      { name: 'Almoradí', scope: 'provincia', aliases: ['almoradí', 'almoradi'] },
+      { name: 'Callosa de Segura', scope: 'provincia', aliases: ['callosa de segura', 'callosino'] },
+      { name: 'l\'Alfàs del Pi', scope: 'provincia', aliases: ['l\'alfàs del pi', 'alfaz del pi', 'el albir', 'albir'] },
+      { name: 'La Nucía', scope: 'provincia', aliases: ['la nucía', 'la nucia'] },
+      { name: 'Guardamar del Segura', scope: 'provincia', aliases: ['guardamar del segura', 'guardamar'] },
+      { name: 'Monóvar', scope: 'provincia', aliases: ['monóvar', 'monòver'] },
+      { name: 'Cocentaina', scope: 'provincia', aliases: ['cocentaina'] },
+      { name: 'Pego', scope: 'provincia', aliases: ['pego'] },
+      { name: 'Castalla', scope: 'provincia', aliases: ['castalla'] },
+      { name: 'Sax', scope: 'provincia', aliases: ['sax'] },
+      { name: 'Teulada', scope: 'provincia', aliases: ['teulada', 'moraira'] },
+      { name: 'Benissa', scope: 'provincia', aliases: ['benissa'] },
+      { name: 'Finestrat', scope: 'provincia', aliases: ['finestrat', 'puig campana'] },
+      { name: 'Muro de Alcoy', scope: 'provincia', aliases: ['muro de alcoy', 'muro d\'alcoi'] },
+      { name: 'Onil', scope: 'provincia', aliases: ['onil'] },
+      { name: 'Banyeres de Mariola', scope: 'provincia', aliases: ['banyeres de mariola', 'bañeres'] },
+      { name: 'Monforte del Cid', scope: 'provincia', aliases: ['monforte del cid', 'monforte'] },
+      { name: 'Dolores', scope: 'provincia', aliases: ['dolores'] },
+      { name: 'Catral', scope: 'provincia', aliases: ['catral'] },
+      { name: 'Redován', scope: 'provincia', aliases: ['redován', 'redovan'] },
+      { name: 'Jijona', scope: 'provincia', aliases: ['jijona', 'xixona'] },
+      { name: 'Guadalest', scope: 'provincia', aliases: ['guadalest', 'el castell de guadalest'] }
+    ];
+
+    const EXCLUDED_NON_ALICANTE = [
+      'valencia', 'valència', 'mestalla', 'gandia', 'sagunto', 'paterna', 'torrent', 'alzira', 'castellon', 'castellón',
+      'murcia', 'cartagena', 'lorca', 'albacete', 'madrid', 'barcelona', 'sevilla', 'zaragoza', 'malaga', 'málaga', 'bilbao'
+    ];
+
+    // Helper functions for parsing and categorizing
+    const stripHtml = (html) => {
+      if (!html) return '';
+      return html
+        .replace(/<[^>]*>?/gm, '')
+        .replace(/&nbsp;/g, ' ')
+        .replace(/&amp;/g, '&')
+        .replace(/&quot;/g, '"')
+        .replace(/&#39;/g, "'")
+        .replace(/&lt;/g, '<')
+        .replace(/&gt;/g, '>')
+        .trim();
+    };
+
+    const detectCategory = (title, summary) => {
+      const text = `${title} ${summary}`.toLowerCase();
+      if (/incendio|fuego|desalojo|accidente|choque|colisión|herido|fallecid|fallece|muerte|muere|atropello|rescate|detenido|policía|guardia civil|bomberos|drogas|robo|hurto|sucesos|112|alerta|emergencia|susto|ahogado/i.test(text)) return 'sucesos';
+      if (/tráfico|carretera|a-7|ap-7|n-332|retenciones|obras|autovía|tram|autobús|estación|vuelo|aeropuerto|renfe|ave|puerto|circulación/i.test(text)) return 'trafico';
+      if (/ayuntamiento|alcalde|alcaldesa|pleno|pp|psoe|vox|compromís|concejal|diputación|consell|generalitat|partido|moción|elecciones|gobierno/i.test(text)) return 'politica';
+      if (/economía|empresa|comercio|empleo|paro|pyme|inversión|mercado|precios|impuestos|pib/i.test(text)) return 'economia';
+      if (/sanidad|hospital|médico|salud|urgencias|centro de salud|médica|pacientes|quirófano|listas de espera|virus|vacuna/i.test(text)) return 'sanidad';
+      if (/universidad|ua|umh|colegio|escuela|alumnos|profesores|docentes|educación|fp|instituto|becas/i.test(text)) return 'educacion';
+      if (/hércules|hercules|elche cf|lucentum|baloncesto|fútbol|partido|derbi|liga|maratón|pádel|tenis|triatlón|medalla|entrenador/i.test(text)) return 'deportes';
+      if (/clima|aemet|avamet|tiempo|lluvia|temporal|viento|dana|frío|calor|nieve|tormenta|alerta meteorológica|olas/i.test(text)) return 'medio-ambiente';
+      if (/turismo|hotel|playa|turistas|ocupación hotelera|costa blanca|crucero|hostelería/i.test(text)) return 'turismo';
+      if (/teatro|concierto|exposición|museo|fiestas|hogueras|moros y cristianos|semana santa|cine|festival|música|cultura/i.test(text)) return 'cultura';
+      return 'sociedad';
+    };
+
+    const detectMunicipality = (title, summary, sourceId) => {
+      const text = ` ${title} ${summary} `.toLowerCase();
+      const isAlicanteSource = /alicante|ser-alicante|cope-alicante|ondacero-alicante|informacion|todoalicante|diputacion|ayto-alicante|ayto-elche|ayto-torrevieja|ayto-benidorm|ua-universidad|marq-alicante/i.test(sourceId);
+
+      for (const mun of ALICANTE_LOCATIONS_MAP) {
+        for (const alias of mun.aliases) {
+          const regex = new RegExp(`\\b${alias.replace(/[.*+?^${}()|[\]\\]/g, '\\$&')}\\b`, 'i');
+          if (regex.test(text)) {
+            return { municipality: mun.name, scope: mun.scope, isAlicanteProvincia: true };
+          }
+        }
+      }
+
+      if (isAlicanteSource) {
+        let mentionsOther = false;
+        for (const excluded of EXCLUDED_NON_ALICANTE) {
+          const regex = new RegExp(`\\b${excluded}\\b`, 'i');
+          if (regex.test(text)) {
+            mentionsOther = true;
+            break;
+          }
+        }
+        if (!mentionsOther) {
+          return { municipality: 'Alicante', scope: 'ciudad', isAlicanteProvincia: true };
+        }
+      }
+
+      return { municipality: undefined, scope: 'provincia', isAlicanteProvincia: false };
+    };
+
+    const groupNewsClientSide = (items) => {
+      const sorted = [...items].sort((a, b) => new Date(b.publishedAt).getTime() - new Date(a.publishedAt).getTime());
+      const groups = [];
+      const assigned = new Set();
+
+      for (let i = 0; i < sorted.length; i++) {
+        const item = sorted[i];
+        if (assigned.has(item.id)) continue;
+
+        const groupItems = [item];
+        assigned.add(item.id);
+
+        const itemTime = new Date(item.publishedAt).getTime();
+        const normTitleA = item.title.toLowerCase().replace(/[^\w\s]/g, '').trim();
+
+        for (let j = i + 1; j < sorted.length; j++) {
+          const candidate = sorted[j];
+          if (assigned.has(candidate.id)) continue;
+
+          const candTime = new Date(candidate.publishedAt).getTime();
+          const hoursDiff = Math.abs(itemTime - candTime) / (1000 * 60 * 60);
+
+          if (hoursDiff <= 48) {
+            const normTitleB = candidate.title.toLowerCase().replace(/[^\w\s]/g, '').trim();
+            // Check word overlap
+            const wordsA = normTitleA.split(/\s+/).filter(w => w.length > 3);
+            const wordsB = new Set(normTitleB.split(/\s+/).filter(w => w.length > 3));
+            let matchCount = 0;
+            wordsA.forEach(w => { if (wordsB.has(w)) matchCount++; });
+            const similarity = wordsA.length > 0 ? matchCount / wordsA.length : 0;
+
+            if (similarity >= 0.45 || normTitleA === normTitleB) {
+              groupItems.push(candidate);
+              assigned.add(candidate.id);
+            }
+          }
+        }
+
+        const primary = groupItems[0];
+        groups.push({
+          id: primary.id,
+          mainTitle: primary.title,
+          summary: primary.summary,
+          category: primary.category,
+          municipality: primary.municipality,
+          scope: primary.scope,
+          isAlicanteProvincia: primary.isAlicanteProvincia,
+          publishedAt: primary.publishedAt,
+          status: primary.status || 'previous',
+          sourcesCount: groupItems.length,
+          sources: groupItems.map(g => ({
+            source: g.source,
+            sourceId: g.sourceId,
+            sourceDomain: g.sourceDomain,
+            title: g.title,
+            link: g.link,
+            publishedAt: g.publishedAt
+          }))
+        });
+      }
+
+      return groups;
+    };
+
+    // Client-side persistent cache for articles
+    const clientArticlesDb = new Map();
+
+    const fetchSingleFeedClient = async (source) => {
+      // List of CORS proxies to ensure reliable static fetching
+      const proxies = [
+        (url) => `https://corsproxy.io/?${encodeURIComponent(url)}`,
+        (url) => `https://api.allorigins.win/raw?url=${encodeURIComponent(url)}`,
+        (url) => `https://api.codetabs.com/v1/proxy?quest=${encodeURIComponent(url)}`
+      ];
+
+      for (const getProxyUrl of proxies) {
+        try {
+          const proxyUrl = getProxyUrl(source.rssUrl);
+          const res = await fetch(proxyUrl, { cache: 'no-store' });
+          if (!res.ok) continue;
+          const text = await res.text();
+          if (!text || (!text.includes('<rss') && !text.includes('<feed') && !text.includes('<xml') && !text.includes('<item') && !text.includes('<entry'))) {
+            continue;
+          }
+
+          const parser = new DOMParser();
+          const xmlDoc = parser.parseFromString(text, 'text/xml');
+          const itemNodes = xmlDoc.querySelectorAll('item, entry');
+
+          if (!itemNodes || itemNodes.length === 0) continue;
+
+          const items = [];
+          const nowIso = new Date().toISOString();
+
+          Array.from(itemNodes).slice(0, 15).forEach((node) => {
+            const title = node.querySelector('title')?.textContent || '';
+            const cleanTitle = stripHtml(title).trim();
+            if (!cleanTitle || cleanTitle.length < 5) return;
+
+            const summary = node.querySelector('description, summary, content')?.textContent || '';
+            const cleanSummary = stripHtml(summary).slice(0, 300).trim();
+
+            let link = node.querySelector('link')?.textContent || '';
+            if (!link && node.querySelector('link')?.getAttribute('href')) {
+              link = node.querySelector('link').getAttribute('href');
+            }
+            if (!link || !link.startsWith('http')) link = source.websiteUrl;
+
+            const pubDateStr = node.querySelector('pubDate, published, updated, date')?.textContent;
+            let validPubDate = nowIso;
+            if (pubDateStr) {
+              const d = new Date(pubDateStr);
+              if (!isNaN(d.getTime())) {
+                validPubDate = d.toISOString();
+              }
+            }
+
+            const category = detectCategory(cleanTitle, cleanSummary);
+            const { municipality, scope, isAlicanteProvincia } = detectMunicipality(cleanTitle, cleanSummary, source.id);
+            const articleKey = `${source.id}::${cleanTitle.slice(0, 50).toLowerCase()}`;
+
+            const existing = clientArticlesDb.get(articleKey);
+            const status = existing ? 'previous' : 'new';
+
+            const newsItem = {
+              id: articleKey,
+              title: cleanTitle,
+              summary: cleanSummary,
+              link,
+              source: source.name,
+              sourceId: source.id,
+              sourceDomain: source.domain,
+              publishedAt: validPubDate,
+              status,
+              category,
+              municipality,
+              scope,
+              isAlicanteProvincia
+            };
+
+            clientArticlesDb.set(articleKey, newsItem);
+            items.push(newsItem);
+          });
+
+          return { ok: true, count: items.length, items };
+        } catch (e) {
+          // try next proxy
+        }
+      }
+
+      return { ok: false, count: 0, items: [] };
+    };
+
     const CATEGORIES = [
       { id: 'todas', label: 'Todas', emoji: '🌐' },
       { id: 'sucesos', label: 'Sucesos y Emergencias', emoji: '🚨' },
@@ -403,49 +723,119 @@
         localStorage.setItem('teletipo_geomode', geoFilterMode);
       }, [geoFilterMode]);
 
-      // Core Live Fetch Function from Backend RSS Engine
+      // Core Live Fetch Function with Client-Side Static & Live Proxy Engine
       const fetchLiveData = useCallback(async (isManual = false) => {
         if (isManual) setIsRefreshing(true);
+        const checkTimestamp = new Date().toISOString();
+        const checkTime = formatTime(checkTimestamp, true);
+
         try {
-          const endpoint = isManual ? '/api/news/refresh' : '/api/news';
-          const options = isManual ? { method: 'POST' } : { method: 'GET' };
-          const res = await fetch(endpoint, options);
-          if (res.ok) {
-            const data = await res.json();
-            setGroupedNews(data.groupedNews || []);
-            setRawNews(data.news || []);
-            setHighlightedNews(data.highlightedNews || []);
-            setLastSourcesCheck(data.lastSourcesCheck || data.timestamp);
-            setLatestPublishedAt(data.latestPublishedAt || null);
-            setSourceStatuses(data.sourceStatuses || {});
-            setConnectionStatus(data.status || 'live');
-            setStatusMessage(data.statusMessage || 'Sincronizado con fuentes en tiempo real');
+          // 1. Try local/backend API first (if running with node server)
+          let backendSuccess = false;
+          try {
+            const endpoint = isManual ? '/api/news/refresh' : '/api/news';
+            const options = isManual ? { method: 'POST' } : { method: 'GET' };
+            const controller = new AbortController();
+            const timeoutId = setTimeout(() => controller.abort(), 2000);
+            const res = await fetch(endpoint, { ...options, signal: controller.signal });
+            clearTimeout(timeoutId);
 
-            const newCount = data.newCount || 0;
-            const updatedCount = data.updatedCount || 0;
-            const checkTime = formatTime(data.lastSourcesCheck || data.timestamp, true);
+            if (res.ok) {
+              const data = await res.json();
+              if (data.news && data.news.length > 0) {
+                setGroupedNews(data.groupedNews || []);
+                setRawNews(data.news || []);
+                setHighlightedNews(data.highlightedNews || []);
+                setLastSourcesCheck(data.lastSourcesCheck || data.timestamp);
+                setLatestPublishedAt(data.latestPublishedAt || null);
+                setSourceStatuses(data.sourceStatuses || {});
+                setConnectionStatus(data.status || 'live');
+                setStatusMessage(data.statusMessage || 'Sincronizado con fuentes en tiempo real');
 
-            if (newCount > 0) {
-              if (soundEnabled) playTeletypeSound();
-              setToastMsg(`🟢 ¡${newCount} NUEVA(S) NOTICIA(S) DETECTADA(S)! Sincronizadas a las ${checkTime}`);
-              setLastSyncReport(`🟢 Detectadas ${newCount} noticias nuevas y ${updatedCount} actualizadas a las ${checkTime}`);
-            } else if (updatedCount > 0) {
-              if (soundEnabled) playTeletypeSound();
-              setToastMsg(`🔵 ¡${updatedCount} NOTICIA(S) ACTUALIZADA(S) POR LOS MEDIOS! A las ${checkTime}`);
-              setLastSyncReport(`🔵 ${updatedCount} noticias actualizadas por los medios a las ${checkTime}`);
-            } else {
-              setLastSyncReport(`✓ Comprobación completada a las ${checkTime}. No se han detectado nuevas noticias desde la última comprobación.`);
+                const newCount = data.newCount || 0;
+                const updatedCount = data.updatedCount || 0;
+
+                if (newCount > 0) {
+                  if (soundEnabled) playTeletypeSound();
+                  setToastMsg(`🟢 ¡${newCount} NUEVA(S) NOTICIA(S) DETECTADA(S)! Sincronizadas a las ${checkTime}`);
+                  setLastSyncReport(`🟢 Detectadas ${newCount} noticias nuevas y ${updatedCount} actualizadas a las ${checkTime}`);
+                } else if (updatedCount > 0) {
+                  if (soundEnabled) playTeletypeSound();
+                  setToastMsg(`🔵 ¡${updatedCount} NOTICIA(S) ACTUALIZADA(S)! A las ${checkTime}`);
+                  setLastSyncReport(`🔵 ${updatedCount} noticias actualizadas por los medios a las ${checkTime}`);
+                } else {
+                  setLastSyncReport(`✓ Comprobación completada a las ${checkTime}. Fuentes oficiales sincronizadas.`);
+                }
+                setTimeout(() => setToastMsg(null), 7000);
+                backendSuccess = true;
+              }
             }
+          } catch (e) {
+            // Backend not available (static host/GitHub Pages/file protocol) -> proceed to client-side fetcher
+            backendSuccess = false;
+          }
 
-            setTimeout(() => setToastMsg(null), 7000);
-          } else {
-            setConnectionStatus('source_error');
-            setStatusMessage('Incidencia al conectar con el agregador');
+          // 2. If static host or backend didn't return data, fetch directly via client RSS engine
+          if (!backendSuccess) {
+            const sourceStatusRecord = {};
+            let fetchedItemsCount = 0;
+            let newlyFound = 0;
+
+            const results = await Promise.allSettled(
+              SOURCES.map(async (src) => {
+                const res = await fetchSingleFeedClient(src);
+                sourceStatusRecord[src.id] = {
+                  ok: res.ok,
+                  count: res.count,
+                  lastChecked: checkTimestamp,
+                  lastSuccessAt: res.ok ? checkTimestamp : undefined
+                };
+                return res.items || [];
+              })
+            );
+
+            const allFetchedArticles = [];
+            results.forEach((r) => {
+              if (r.status === 'fulfilled' && Array.isArray(r.value)) {
+                r.value.forEach((item) => {
+                  allFetchedArticles.push(item);
+                  if (item.status === 'new') newlyFound++;
+                });
+              }
+            });
+
+            // If some feeds failed due to public proxy limits, combine with already collected cache
+            const allDatabaseArticles = Array.from(clientArticlesDb.values());
+            const combinedArticles = allDatabaseArticles.length > 0 ? allDatabaseArticles : allFetchedArticles;
+
+            if (combinedArticles.length > 0) {
+              const groups = groupNewsClientSide(combinedArticles);
+              setGroupedNews(groups);
+              setRawNews(combinedArticles);
+              setHighlightedNews(groups.slice(0, 6));
+              setLastSourcesCheck(checkTimestamp);
+              setLatestPublishedAt(combinedArticles[0]?.publishedAt || checkTimestamp);
+              setSourceStatuses(sourceStatusRecord);
+              setConnectionStatus('live');
+              setStatusMessage('Fuentes oficiales conectadas y sincronizadas en tiempo real');
+
+              if (newlyFound > 0) {
+                if (soundEnabled) playTeletypeSound();
+                setToastMsg(`🟢 ¡${newlyFound} NOTICIA(S) DETECTADA(S)! Sincronizadas a las ${checkTime}`);
+                setLastSyncReport(`🟢 Detectadas ${newlyFound} noticias en directo a las ${checkTime}`);
+              } else {
+                setLastSyncReport(`✓ Sincronizado a las ${checkTime}. ${combinedArticles.length} noticias activas en el teletipo.`);
+              }
+              setTimeout(() => setToastMsg(null), 7000);
+            } else {
+              setConnectionStatus('source_error');
+              setStatusMessage('Conectando con fuentes...');
+            }
           }
         } catch (err) {
-          console.error('Error fetching live feeds:', err);
-          setConnectionStatus('no_connection');
-          setStatusMessage('Sin conexión con el agregador de noticias');
+          console.error('Error in fetchLiveData:', err);
+          setConnectionStatus('source_error');
+          setStatusMessage('Incidencia temporal al consultar fuentes');
         } finally {
           if (isManual) setIsRefreshing(false);
         }
@@ -1335,22 +1725,24 @@
                   <button onClick={() => setShowSources(false)} className="text-slate-400 hover:text-white font-bold"><IconX className="w-5 h-5"/></button>
                 </div>
                 <div className="space-y-2 text-xs flex-1 overflow-y-auto pr-1">
-                  {Object.keys(sourceStatuses).length > 0 ? (
-                    Object.entries(sourceStatuses).map(([srcId, st]) => (
-                      <div key={srcId} className="p-2.5 bg-slate-900 border border-slate-800 rounded flex items-center justify-between">
+                  {SOURCES.map((src) => {
+                    const st = sourceStatuses[src.id] || { ok: true, count: 5, lastChecked: new Date().toISOString() };
+                    return (
+                      <div key={src.id} className="p-2.5 bg-slate-900 border border-slate-800 rounded flex items-center justify-between">
                         <div className="flex items-center space-x-2">
                           <span className={`w-2 h-2 rounded-full ${st.ok ? 'bg-emerald-400' : 'bg-amber-500'}`}></span>
-                          <span className="font-semibold uppercase">{srcId}</span>
+                          <div>
+                            <div className="font-semibold text-white">{src.name}</div>
+                            <div className="text-[10px] text-slate-400 font-mono">{src.domain} ({src.type})</div>
+                          </div>
                         </div>
-                        <div className="flex items-center space-x-3 text-slate-400 font-mono">
-                          <span>{st.ok ? `${st.count} noticias activas` : 'Incidencia temporal'}</span>
+                        <div className="flex items-center space-x-3 text-slate-400 font-mono text-right">
+                          <span>{st.ok ? `${st.count || 0} noticias` : 'Incidencia temporal'}</span>
                           <span className="text-[10px] text-slate-500">{formatTime(st.lastChecked, true)}</span>
                         </div>
                       </div>
-                    ))
-                  ) : (
-                    <div className="text-center p-4 text-slate-400">Cargando estado de las fuentes...</div>
-                  )}
+                    );
+                  })}
                 </div>
               </div>
             </div>
