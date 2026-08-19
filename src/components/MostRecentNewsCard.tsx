@@ -190,14 +190,20 @@ export const MostRecentNewsCard: React.FC<MostRecentNewsCardProps> = ({
                 </span>
 
                 {newsItem.municipality && (
-                  <span className={`text-[10px] font-mono px-2 py-0.5 rounded border flex items-center gap-1 ${
-                    isLight ? 'bg-slate-100 text-slate-700 border-slate-300' : 'bg-[#151c2c] text-slate-300 border-[#2b3a54]'
-                  }`}>
-                    <MapPin className="w-3 h-3 text-red-500" />
-                    {newsItem.municipality}
+                  <span className="font-mono font-black text-xs uppercase px-2.5 py-0.5 rounded bg-amber-400 text-slate-950 border border-amber-500 shadow-sm flex items-center gap-1">
+                    <MapPin className="w-3 h-3 text-slate-950" />
+                    <span>{newsItem.municipality.toUpperCase()}</span>
                   </span>
                 )}
               </div>
+
+              {newsItem.municipality && (
+                <div className="pt-0.5">
+                  <span className="text-amber-500 dark:text-amber-400 font-mono font-black text-xs uppercase tracking-wider block">
+                    📍 {newsItem.municipality.toUpperCase()}
+                  </span>
+                </div>
+              )}
 
               <h3 className={`text-base sm:text-lg lg:text-xl font-extrabold leading-tight tracking-tight ${
                 isLight ? 'text-slate-900' : 'text-white'

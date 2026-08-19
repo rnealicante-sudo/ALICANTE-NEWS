@@ -1,5 +1,5 @@
-import { CategoryType, RelevanceWeights } from '../types';
-import { MUNICIPALITIES_ALICANTE, DEFAULT_RELEVANCE_WEIGHTS } from '../data/sources';
+import { CategoryType, RelevanceWeights, NewsScope } from '../types';
+import { MUNICIPALITIES_ALICANTE, EXCLUDED_NON_ALICANTE_LOCATIONS, DEFAULT_RELEVANCE_WEIGHTS } from '../data/sources';
 
 /**
  * Strips HTML tags safely and decodes common entities
@@ -143,47 +143,82 @@ export function detectCategory(title: string, summary: string): CategoryType {
 }
 
 /**
- * Detects municipality in title and summary
+ * Detects municipality in title and summary with complete alias and scope resolution.
+ * Strictly verifies that the municipality belongs to the province of Alicante.
+ * Excludes news from Valencia, Murcia, Albacete, Castellón, etc. unless an Alicante municipality is verified.
  */
 export function detectMunicipality(
   title: string,
-  summary: string
-): { municipality?: string; scope: 'ciudad' | 'provincia' } {
+  summary: string,
+  sourceId?: string
+): { municipality?: string; scope: NewsScope; isAlicanteProvincia: boolean } {
   const text = `${title} ${summary}`.toLowerCase();
 
-  for (const m of MUNICIPALITIES_ALICANTE) {
-    const nameLower = m.name.toLowerCase();
+  // 1. Dedicated Municipal / Local Official Feeds with guaranteed location
+  if (sourceId === 'ayto-alicante' || sourceId === 'bomberos-ayto-alc' || sourceId === 'alicante-city' || sourceId === 'alicanteayto-x' || sourceId === 'radioalicante') {
+    return { municipality: 'Alicante', scope: 'ciudad', isAlicanteProvincia: true };
+  }
+  if (sourceId === 'ayto-elche' || sourceId === 'elchecf') {
+    return { municipality: 'Elche', scope: 'provincia', isAlicanteProvincia: true };
+  }
+  if (sourceId === 'ayto-benidorm') {
+    return { municipality: 'Benidorm', scope: 'provincia', isAlicanteProvincia: true };
+  }
+  if (sourceId === 'ayto-torrevieja') {
+    return { municipality: 'Torrevieja', scope: 'provincia', isAlicanteProvincia: true };
+  }
+  if (sourceId === 'ua-universidad') {
+    return { municipality: 'San Vicente del Raspeig', scope: 'provincia', isAlicanteProvincia: true };
+  }
+  if (sourceId === 'marq-alicante') {
+    return { municipality: 'Alicante', scope: 'ciudad', isAlicanteProvincia: true };
+  }
 
-    // Check specific name matches
-    if (text.includes(nameLower)) {
-      return {
-        municipality: m.name,
-        scope: m.scope,
-      };
+  // 2. Check for explicit confirmed Alicante municipalities with word boundary
+  for (const m of MUNICIPALITIES_ALICANTE) {
+    const namesToTest = [m.name, ...(m.aliases || [])];
+    for (const rawName of namesToTest) {
+      const escaped = rawName.replace(/[.*+?^${}()|[\]\\]/g, '\\$&');
+      const regex = new RegExp(`\\b${escaped}\\b`, 'i');
+      if (regex.test(text)) {
+        return {
+          municipality: m.name,
+          scope: m.scope,
+          isAlicanteProvincia: true,
+        };
+      }
     }
   }
 
-  // Special aliases
-  if (text.includes('capital') || text.includes('alacant') || text.includes('explanada') || text.includes('postiguet')) {
-    return { municipality: 'Alicante', scope: 'ciudad' };
-  }
-  if (text.includes('elx') || text.includes('palmeral') || text.includes('martínez valero')) {
-    return { municipality: 'Elche', scope: 'provincia' };
-  }
-  if (text.includes('san vicente') || text.includes('san vicent')) {
-    return { municipality: 'San Vicente del Raspeig', scope: 'provincia' };
-  }
-  if (text.includes('vega baja') || text.includes('orihuela')) {
-    return { municipality: 'Orihuela', scope: 'provincia' };
-  }
-  if (text.includes('marina alta') || text.includes('dénia') || text.includes('denia')) {
-    return { municipality: 'Denia', scope: 'provincia' };
-  }
-  if (text.includes('marina baixa') || text.includes('benidorm')) {
-    return { municipality: 'Benidorm', scope: 'provincia' };
+  // 3. Broad Alicante Comarcas & Landmark aliases
+  if (/\b(costa blanca|marina alta|marina baixa|marina baja|vega baja|l'alacantí|alacantí|vinalopó|foia de castalla|el comtat|l'alcoià|alto vinalopó|medio vinalopó|baixo vinalopó|vinalopó mitjà)\b/i.test(text)) {
+    return {
+      municipality: 'Provincia de Alicante',
+      scope: 'provincia',
+      isAlicanteProvincia: true,
+    };
   }
 
-  return { scope: 'provincia' };
+  // 4. Mention of Alicante or Alacant as a whole
+  if (/\b(alicante|alacant|provincia de alicante)\b/i.test(text)) {
+    return {
+      municipality: 'Alicante',
+      scope: 'ciudad',
+      isAlicanteProvincia: true,
+    };
+  }
+
+  // 5. If it mentions other regions/provinces (Valencia, Murcia, Albacete, Castellón, etc.) without an Alicante municipality, it is NOT Alicante
+  for (const excluded of EXCLUDED_NON_ALICANTE_LOCATIONS) {
+    const escaped = excluded.replace(/[.*+?^${}()|[\]\\]/g, '\\$&');
+    const regex = new RegExp(`\\b${escaped}\\b`, 'i');
+    if (regex.test(text)) {
+      return { scope: 'general', isAlicanteProvincia: false };
+    }
+  }
+
+  // 6. Otherwise, if no verified Alicante municipality can be confirmed, mark as general
+  return { scope: 'general', isAlicanteProvincia: false };
 }
 
 /**
@@ -338,4 +373,72 @@ export function calculateRelevance(
   }
 
   return Math.max(0, Math.round(score * 10) / 10);
+}
+
+/**
+ * Returns all town names and aliases sorted by length descending for greedy regex matching
+ */
+export function getAllMunicipalityKeywords(): string[] {
+  const terms = new Set<string>();
+  for (const m of MUNICIPALITIES_ALICANTE) {
+    terms.add(m.name);
+    if (m.aliases) {
+      m.aliases.forEach((a) => terms.add(a));
+    }
+  }
+  // Add common comarcas
+  terms.add('Alicante');
+  terms.add('Alacant');
+  terms.add('Costa Blanca');
+  terms.add('Vega Baja');
+  terms.add('Marina Alta');
+  terms.add('Marina Baixa');
+  terms.add('L\'Alacantí');
+  terms.add('Vinalopó');
+
+  return Array.from(terms).sort((a, b) => b.length - a.length);
+}
+
+export interface TextChunk {
+  text: string;
+  isMunicipality: boolean;
+  municipalityName?: string;
+}
+
+/**
+ * Splits a text into chunks, marking towns / populations so they can be highlighted
+ */
+export function parseMunicipalityChunks(
+  text: string,
+  targetMunicipality?: string
+): TextChunk[] {
+  if (!text) return [];
+
+  const keywords = getAllMunicipalityKeywords();
+  if (targetMunicipality && !keywords.includes(targetMunicipality)) {
+    keywords.unshift(targetMunicipality);
+  }
+
+  // Create a regex to match any of the keywords as whole words / boundaries
+  const escaped = keywords
+    .map((k) => k.replace(/[.*+?^${}()|[\]\\]/g, '\\$&'))
+    .join('|');
+
+  const regex = new RegExp(`(\\b(?:${escaped})\\b)`, 'gi');
+  const parts = text.split(regex);
+
+  const chunks: TextChunk[] = [];
+  for (const part of parts) {
+    if (!part) continue;
+    const isMatch = keywords.some(
+      (k) => k.toLowerCase() === part.toLowerCase()
+    );
+    chunks.push({
+      text: part,
+      isMunicipality: isMatch,
+      municipalityName: isMatch ? part : undefined,
+    });
+  }
+
+  return chunks;
 }

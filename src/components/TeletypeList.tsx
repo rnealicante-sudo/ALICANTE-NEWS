@@ -1,26 +1,24 @@
 import React, { useState } from 'react';
-import { GroupedNews, ThemeType } from '../types';
-import { ExternalLink, Layers, ChevronDown, ChevronUp } from 'lucide-react';
+import { GroupedNews, ThemeType, GeoFilterMode } from '../types';
+import { ExternalLink, Layers, ChevronDown, ChevronUp, Globe, Building2 } from 'lucide-react';
+import { parseMunicipalityChunks } from '../utils/textUtils';
 
 interface TeletypeListProps {
   newsGroups: GroupedNews[];
   theme?: ThemeType;
+  geoFilterMode?: GeoFilterMode;
+  onSelectGeoFilterMode?: (mode: GeoFilterMode) => void;
 }
 
-export const TeletypeList: React.FC<TeletypeListProps> = ({ newsGroups, theme = 'dark' }) => {
+export const TeletypeList: React.FC<TeletypeListProps> = ({
+  newsGroups,
+  theme = 'dark',
+  geoFilterMode = 'alicante_provincia',
+  onSelectGeoFilterMode,
+}) => {
   const [expandedGroupId, setExpandedGroupId] = useState<string | null>(null);
   const isLight = theme === 'light';
-
-  if (!newsGroups || newsGroups.length === 0) {
-    return (
-      <div className={`border rounded-xl p-8 text-center my-6 max-w-7xl mx-auto ${
-        isLight ? 'bg-white border-slate-300 text-slate-600' : 'bg-[#0a0f18] border-[#1e293b] text-[#94a3b8]'
-      }`}>
-        <p className="text-base font-semibold">No se han encontrado noticias que coincidan con los filtros seleccionados.</p>
-        <p className="text-xs text-slate-400 mt-1">Prueba a seleccionar "Todas las noticias" o ampliar el rango temporal.</p>
-      </div>
-    );
-  }
+  const isAlicanteMode = geoFilterMode === 'alicante_provincia';
 
   const formatTime = (iso: string) => {
     const d = new Date(iso);
@@ -40,22 +38,114 @@ export const TeletypeList: React.FC<TeletypeListProps> = ({ newsGroups, theme = 
     setExpandedGroupId(expandedGroupId === id ? null : id);
   };
 
+  /**
+   * Helper component to render text with highlighted municipalities/towns
+   */
+  const HighlightedText: React.FC<{ text: string; targetMun?: string }> = ({ text, targetMun }) => {
+    if (!isAlicanteMode) {
+      return <span>{text}</span>;
+    }
+
+    const chunks = parseMunicipalityChunks(text, targetMun);
+    return (
+      <span>
+        {chunks.map((chunk, i) => {
+          if (chunk.isMunicipality) {
+            return (
+              <mark
+                key={i}
+                className="bg-amber-400 text-slate-950 font-black px-1.5 py-0.5 rounded shadow-sm inline-block mx-0.5 border border-amber-300 transition-transform hover:scale-105"
+                title={`Población: ${chunk.text}`}
+              >
+                📍 {chunk.text}
+              </mark>
+            );
+          }
+          return <React.Fragment key={i}>{chunk.text}</React.Fragment>;
+        })}
+      </span>
+    );
+  };
+
+  if (!newsGroups || newsGroups.length === 0) {
+    return (
+      <main className="max-w-7xl mx-auto px-4 py-6 flex-1">
+        <div className={`${
+          isLight ? 'bg-white border-slate-300' : 'bg-[#0a0f18] border-[#1e293b]'
+        } rounded-lg border overflow-hidden flex flex-col shadow-lg transition-colors p-8 text-center space-y-3`}>
+          <p className="text-base font-semibold text-slate-300">
+            No se han encontrado noticias para el filtro {isAlicanteMode ? 'de Alicante y Provincia' : 'general'}.
+          </p>
+          <p className="text-xs text-slate-400">
+            Prueba a cambiar entre los modos "GENERALES" y "ALICANTE Y PROVINCIA", o seleccionar "Todas las noticias" en categorías.
+          </p>
+          {onSelectGeoFilterMode && (
+            <div className="pt-3 flex justify-center gap-2">
+              <button
+                onClick={() => onSelectGeoFilterMode('generales')}
+                className="px-3 py-1.5 bg-blue-600 hover:bg-blue-500 text-white rounded text-xs font-bold uppercase tracking-wider"
+              >
+                Ver noticias Generales
+              </button>
+              <button
+                onClick={() => onSelectGeoFilterMode('alicante_provincia')}
+                className="px-3 py-1.5 bg-red-600 hover:bg-red-500 text-white rounded text-xs font-bold uppercase tracking-wider"
+              >
+                Ver Alicante y Provincia
+              </button>
+            </div>
+          )}
+        </div>
+      </main>
+    );
+  }
+
   return (
     <main className="max-w-7xl mx-auto px-4 py-6 flex-1">
       {/* Feed Container */}
       <div className={`${
         isLight ? 'bg-white border-slate-300' : 'bg-[#0a0f18] border-[#1e293b]'
       } rounded-lg border overflow-hidden flex flex-col shadow-lg transition-colors`}>
+        
         {/* Header Bar */}
         <div className={`${
           isLight ? 'bg-slate-200 border-slate-300 text-slate-900' : 'bg-[#1e293b] border-[#1e293b] text-white'
-        } p-3.5 flex items-center justify-between border-b`}>
+        } p-3.5 flex flex-wrap items-center justify-between gap-3 border-b`}>
           <div className="flex items-center space-x-2">
-            <span className="text-[#ef4444] text-lg">🔴</span>
+            <span className="text-[#ef4444] text-lg animate-pulse">🔴</span>
             <h2 className="font-bold uppercase tracking-tight text-sm font-sans">
-              ÚLTIMA HORA - ÚLTIMOS TELETIPOS ALICANTE
+              ÚLTIMAS NOTICIAS - {isAlicanteMode ? 'ALICANTE Y PROVINCIA' : 'NOTICIAS GENERALES'}
             </h2>
           </div>
+
+          {/* Quick Toggle Buttons in Header */}
+          {onSelectGeoFilterMode && (
+            <div className="flex items-center space-x-1.5 bg-black/30 p-1 rounded-md border border-slate-700/50">
+              <button
+                onClick={() => onSelectGeoFilterMode('generales')}
+                className={`px-2.5 py-1 rounded text-[11px] font-black uppercase tracking-wider flex items-center space-x-1 transition ${
+                  geoFilterMode === 'generales'
+                    ? 'bg-blue-600 text-white shadow'
+                    : 'text-slate-400 hover:text-white'
+                }`}
+              >
+                <Globe className="w-3 h-3" />
+                <span>GENERALES</span>
+              </button>
+              <button
+                onClick={() => onSelectGeoFilterMode('alicante_provincia')}
+                className={`px-2.5 py-1 rounded text-[11px] font-black uppercase tracking-wider flex items-center space-x-1 transition ${
+                  geoFilterMode === 'alicante_provincia'
+                    ? 'bg-[#ef4444] text-white shadow'
+                    : 'text-slate-400 hover:text-white'
+                }`}
+              >
+                <Building2 className="w-3 h-3" />
+                <span>ALICANTE Y PROVINCIA</span>
+              </button>
+            </div>
+          )}
+
           <div className={`flex items-center space-x-2 text-[10px] font-mono font-bold uppercase tracking-wider ${
             isLight ? 'text-slate-600' : 'text-[#94a3b8]'
           }`}>
@@ -63,6 +153,18 @@ export const TeletypeList: React.FC<TeletypeListProps> = ({ newsGroups, theme = 
             <span>EN DIRECTO</span>
           </div>
         </div>
+
+        {/* Highlight Notice Banner if Alicante mode is active */}
+        {isAlicanteMode && (
+          <div className={`px-4 py-1.5 text-[11px] font-bold border-b flex items-center justify-between ${
+            isLight ? 'bg-amber-50 text-amber-900 border-amber-200' : 'bg-amber-950/30 text-amber-300 border-amber-800/50'
+          }`}>
+            <span className="flex items-center gap-1.5">
+              <span>📍</span>
+              <span>Modo <strong>Alicante y Provincia</strong> activo: Mostrando únicamente noticias locales con nombres de población resaltados en el texto.</span>
+            </span>
+          </div>
+        )}
 
         {/* Feed List */}
         <div className={`divide-y ${isLight ? 'divide-slate-200' : 'divide-[#1e293b]'}`}>
@@ -86,7 +188,7 @@ export const TeletypeList: React.FC<TeletypeListProps> = ({ newsGroups, theme = 
                 <div className="flex flex-col sm:flex-row sm:items-start gap-3">
                   {/* Time & Sources Badge */}
                   <div className="flex sm:flex-col items-center sm:items-start gap-2 shrink-0 sm:w-28 font-mono">
-                    <span className="text-sm font-bold text-[#ef4444]">{formatTime(group.publishedAt)}</span>
+                    <span className="text-sm font-bold text-[#ef4444]">{formatTime(group.publishedAt)} h</span>
                     <span className={`text-[10px] ${isLight ? 'text-slate-500' : 'text-[#64748b]'}`}>{formatDateShort(group.publishedAt)}</span>
                     <span className={`text-[9px] px-2 py-0.5 rounded uppercase font-sans font-bold ${
                       isLight ? 'bg-slate-100 text-slate-700 border border-slate-300' : 'bg-[#1e293b] text-[#94a3b8]'
@@ -97,12 +199,22 @@ export const TeletypeList: React.FC<TeletypeListProps> = ({ newsGroups, theme = 
 
                   {/* Main Article Body */}
                   <div className="flex-1 min-w-0 space-y-1.5">
+                    {group.municipality && (
+                      <div className="mb-1">
+                        <span className="inline-flex items-center gap-1 font-mono font-black text-xs uppercase tracking-wide px-2.5 py-0.5 rounded bg-amber-400 text-slate-950 border border-amber-500 shadow-sm">
+                          <span>📍</span>
+                          <span>{group.municipality.toUpperCase()}</span>
+                        </span>
+                      </div>
+                    )}
+
                     <div className="flex flex-wrap items-center gap-2">
                       <h3 className={`text-sm sm:text-base font-bold leading-snug tracking-tight ${
                         isLight ? 'text-slate-900' : 'text-[#e2e8f0]'
                       }`}>
-                        {group.mainTitle}
+                        <HighlightedText text={group.mainTitle} targetMun={group.municipality} />
                       </h3>
+                      
                       {isGrouped ? (
                         <span className="bg-emerald-500/20 text-emerald-600 dark:text-emerald-400 border border-emerald-500/40 text-[9px] font-bold px-2 py-0.5 rounded flex items-center gap-1">
                           ✓ CONTRASTADA ({group.sourcesCount} MEDIOS)
@@ -112,20 +224,13 @@ export const TeletypeList: React.FC<TeletypeListProps> = ({ newsGroups, theme = 
                           FUENTE VERIFICADA
                         </span>
                       )}
-                      {group.municipality && (
-                        <span className={`text-[10px] px-1.5 py-0.5 rounded border font-medium ${
-                          isLight ? 'bg-slate-100 text-slate-700 border-slate-300' : 'bg-[#050608] text-[#94a3b8] border-[#1e293b]'
-                        }`}>
-                          📍 {group.municipality}
-                        </span>
-                      )}
                     </div>
 
                     {group.summary && (
-                      <p className={`text-xs font-sans italic line-clamp-2 leading-relaxed ${
-                        isLight ? 'text-slate-600' : 'text-[#64748b]'
+                      <p className={`text-xs font-sans leading-relaxed ${
+                        isLight ? 'text-slate-600' : 'text-[#94a3b8]'
                       }`}>
-                        {group.summary}
+                        <HighlightedText text={group.summary} targetMun={group.municipality} />
                       </p>
                     )}
 
@@ -180,7 +285,9 @@ export const TeletypeList: React.FC<TeletypeListProps> = ({ newsGroups, theme = 
                               <span className={`font-bold uppercase ${isLight ? 'text-slate-900' : 'text-white'}`}>{gi.source}</span>
                               <span className={`font-mono ${isLight ? 'text-slate-500' : 'text-[#64748b]'}`}>{formatTime(gi.publishedAt)}</span>
                             </div>
-                            <p className={`italic font-medium ${isLight ? 'text-slate-800' : 'text-[#e2e8f0]'}`}>"{gi.title}"</p>
+                            <p className={`italic font-medium ${isLight ? 'text-slate-800' : 'text-[#e2e8f0]'}`}>
+                              "<HighlightedText text={gi.title} targetMun={gi.municipality} />"
+                            </p>
                             <a
                               href={gi.link}
                               target="_blank"
@@ -204,4 +311,3 @@ export const TeletypeList: React.FC<TeletypeListProps> = ({ newsGroups, theme = 
     </main>
   );
 };
-

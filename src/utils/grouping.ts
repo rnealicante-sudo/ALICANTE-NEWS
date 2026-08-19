@@ -149,7 +149,28 @@ export function groupNewsItems(
       item.publishedAt
     );
 
-    const isNew = currentGroupItems.some((gi) => gi.isNew);
+    // Group lifecycle status: 'new' if any item was newly detected, 'updated' if modified, else 'previous'
+    let groupStatus: 'new' | 'updated' | 'previous' = 'previous';
+    if (currentGroupItems.some((gi) => gi.status === 'new')) {
+      groupStatus = 'new';
+    } else if (currentGroupItems.some((gi) => gi.status === 'updated')) {
+      groupStatus = 'updated';
+    }
+
+    const firstSeenAt = currentGroupItems.reduce(
+      (min, p) => (new Date(p.firstSeenAt) < new Date(min) ? p.firstSeenAt : min),
+      item.firstSeenAt || item.publishedAt
+    );
+
+    const hasUpdated = currentGroupItems.find((p) => p.updatedAt);
+    const updatedAt = hasUpdated ? hasUpdated.updatedAt : undefined;
+
+    const isBreaking = currentGroupItems.some((gi) => gi.isBreaking);
+
+    const matchedWithMun = currentGroupItems.find((gi) => gi.municipality && gi.isAlicanteProvincia);
+    const isAlicante = currentGroupItems.some((gi) => gi.isAlicanteProvincia);
+    const chosenMunicipality = matchedWithMun?.municipality || (item.isAlicanteProvincia ? item.municipality : undefined);
+    const chosenScope = matchedWithMun ? matchedWithMun.scope : (item.isAlicanteProvincia ? item.scope : 'general');
 
     const relevanceScore = calculateRelevance(
       sources.length,
@@ -166,17 +187,21 @@ export function groupNewsItems(
       summary: bestSummary,
       category: item.category,
       publishedAt: newestPublishDate,
-      scope: item.scope,
-      municipality: item.municipality,
+      updatedAt,
+      firstSeenAt,
+      status: groupStatus,
+      scope: chosenScope,
+      municipality: chosenMunicipality,
+      isAlicanteProvincia: isAlicante,
       sourcesCount: sources.length,
+      isBreaking,
       sources,
       items: currentGroupItems,
       relevanceScore,
-      isNew,
     });
   }
 
-  // Sort groups strictly by publishedAt descending (freshest first)
+  // Sort groups strictly by publishedAt descending (freshest real publication first)
   return groups.sort(
     (a, b) => new Date(b.publishedAt).getTime() - new Date(a.publishedAt).getTime()
   );

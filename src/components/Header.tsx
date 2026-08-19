@@ -26,6 +26,7 @@ interface HeaderProps {
   theme: ThemeType;
   sectionOrder: SectionOrderType;
   hasNewItems?: boolean;
+  temporalIncidentsCount?: number;
   onRefresh: () => void;
   onTogglePause: () => void;
   onToggleSound: () => void;
@@ -44,6 +45,7 @@ export const Header: React.FC<HeaderProps> = ({
   theme,
   sectionOrder,
   hasNewItems = false,
+  temporalIncidentsCount = 0,
   onRefresh,
   onTogglePause,
   onToggleSound,
@@ -250,11 +252,22 @@ export const Header: React.FC<HeaderProps> = ({
             {/* Sources Config Modal */}
             <button
               onClick={onOpenSourcesModal}
-              className={`${isLight ? 'bg-white hover:bg-slate-200 text-slate-800 border-slate-300' : 'bg-[#0f172a] hover:bg-[#1e293b] text-[#e2e8f0] border-[#334155]'} px-2.5 py-1.5 rounded text-[11px] font-bold uppercase tracking-wider transition border flex items-center space-x-1`}
-              title="Configurar fuentes de medios"
+              className={`${
+                temporalIncidentsCount > 0
+                  ? 'bg-amber-500/20 border-amber-500/50 text-amber-300 hover:bg-amber-500/30'
+                  : isLight
+                  ? 'bg-white hover:bg-slate-200 text-slate-800 border-slate-300'
+                  : 'bg-[#0f172a] hover:bg-[#1e293b] text-[#e2e8f0] border-[#334155]'
+              } px-2.5 py-1.5 rounded text-[11px] font-bold uppercase tracking-wider transition border flex items-center space-x-1.5 relative`}
+              title="Monitor y configuración de fuentes oficiales e incidencias"
             >
-              <SlidersHorizontal className="w-3.5 h-3.5 text-[#94a3b8]" />
+              <SlidersHorizontal className={`w-3.5 h-3.5 ${temporalIncidentsCount > 0 ? 'text-amber-400' : 'text-[#94a3b8]'}`} />
               <span className="hidden md:inline">Fuentes</span>
+              {temporalIncidentsCount > 0 && (
+                <span className="bg-amber-500 text-black text-[9px] font-black px-1.5 py-0.2 rounded-full font-mono">
+                  {temporalIncidentsCount}
+                </span>
+              )}
             </button>
 
             {/* TV Newsroom Mode */}

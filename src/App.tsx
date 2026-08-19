@@ -6,9 +6,11 @@ import {
   ConnectionStatusType,
   NewsApiResponse,
   SourceConfig,
+  SourceStatusDetail,
   GroupedNews,
   ThemeType,
   SectionOrderType,
+  GeoFilterMode,
 } from './types';
 import { INITIAL_SOURCES } from './data/sources';
 import { audioNotifier } from './utils/AudioNotifier';
@@ -36,10 +38,33 @@ const OFFICIAL_SOURCE_IDS = new Set([
   'ayto-benidorm',
 ]);
 
+const ALICANTE_SOURCE_IDS = new Set([
+  'ser-alicante',
+  'cope-alicante',
+  'ondacero-alicante',
+  'rtve-alicante',
+  'informacion',
+  'alicante-plaza',
+  'lasprovincias-alicante',
+  'levante-alicante',
+  'apunt-alicante',
+  'gva',
+  'diputacion',
+  'gva112',
+  'bomberos',
+  'ayto-alicante',
+  'ayto-elche',
+  'ayto-torrevieja',
+  'ayto-benidorm',
+]);
+
 export default function App() {
   // Local Storage Initialization
   const [soundEnabled, setSoundEnabled] = useState<boolean>(() => {
     return localStorage.getItem('teletipo_sound') !== 'false';
+  });
+  const [geoFilterMode, setGeoFilterMode] = useState<GeoFilterMode>(() => {
+    return (localStorage.getItem('teletipo_geomode') as GeoFilterMode) || 'alicante_provincia';
   });
   const [selectedCategory, setSelectedCategory] = useState<CategoryType>(() => {
     return (localStorage.getItem('teletipo_category') as CategoryType) || 'todas';
@@ -69,6 +94,10 @@ export default function App() {
   const [status, setStatus] = useState<ConnectionStatusType>('connecting');
   const [statusMessage, setStatusMessage] = useState<string>('Conectando con las fuentes...');
   const [lastUpdatedISO, setLastUpdatedISO] = useState<string>('');
+  const [lastSourcesCheck, setLastSourcesCheck] = useState<string>('');
+  const [sourceStatuses, setSourceStatuses] = useState<Record<string, SourceStatusDetail>>({});
+  const [temporalIncidentsCount, setTemporalIncidentsCount] = useState<number>(0);
+  const [averageLatencyMs, setAverageLatencyMs] = useState<number>(0);
   const [groupedNews, setGroupedNews] = useState<GroupedNews[]>([]);
   const [highlightedNews, setHighlightedNews] = useState<GroupedNews[]>([]);
   const [mostRecentNewsItem, setMostRecentNewsItem] = useState<GroupedNews | null>(null);
@@ -83,6 +112,10 @@ export default function App() {
   useEffect(() => {
     localStorage.setItem('teletipo_sound', String(soundEnabled));
   }, [soundEnabled]);
+
+  useEffect(() => {
+    localStorage.setItem('teletipo_geomode', geoFilterMode);
+  }, [geoFilterMode]);
 
   useEffect(() => {
     localStorage.setItem('teletipo_category', selectedCategory);
@@ -155,6 +188,10 @@ export default function App() {
       setStatus(data.status);
       setStatusMessage(data.statusMessage);
       setLastUpdatedISO(data.timestamp);
+      setLastSourcesCheck(data.lastSourcesCheck || data.timestamp);
+      if (data.sourceStatuses) setSourceStatuses(data.sourceStatuses);
+      if (data.temporalIncidentsCount !== undefined) setTemporalIncidentsCount(data.temporalIncidentsCount);
+      if (data.averageLatencyMs !== undefined) setAverageLatencyMs(data.averageLatencyMs);
 
       if (hasNewItems) {
         setHasNewItemsState(true);
@@ -206,8 +243,59 @@ export default function App() {
     }
   };
 
+  // Toggle All Sources at once
+  const handleToggleAllSources = async (active: boolean) => {
+    setSources((prev) => prev.map((s) => ({ ...s, active })));
+    try {
+      for (const source of sources) {
+        await fetch('/api/sources/toggle', {
+          method: 'POST',
+          headers: { 'Content-Type': 'application/json' },
+          body: JSON.stringify({ sourceId: source.id, active }),
+        });
+      }
+      fetchNews();
+    } catch (e) {
+      console.error('Error toggling all sources:', e);
+    }
+  };
+
+  // Select Only Official Sources
+  const handleSelectOnlyOfficial = async () => {
+    setSources((prev) =>
+      prev.map((s) => ({
+        ...s,
+        active: s.type === 'institución' || s.type === 'emergencias' || s.type === 'ayuntamiento',
+      }))
+    );
+    try {
+      for (const source of sources) {
+        const active =
+          source.type === 'institución' ||
+          source.type === 'emergencias' ||
+          source.type === 'ayuntamiento';
+        await fetch('/api/sources/toggle', {
+          method: 'POST',
+          headers: { 'Content-Type': 'application/json' },
+          body: JSON.stringify({ sourceId: source.id, active }),
+        });
+      }
+      fetchNews();
+    } catch (e) {
+      console.error('Error setting only official sources:', e);
+    }
+  };
+
   // Filter Grouped News
   const filteredGroupedNews = groupedNews.filter((group) => {
+    // 0. Primary Geo Filter: "GENERALES" vs "ALICANTE Y PROVINCIA"
+    if (geoFilterMode === 'alicante_provincia') {
+      const isAlicante = group.isAlicanteProvincia || Boolean(group.municipality);
+      if (!isAlicante) {
+        return false;
+      }
+    }
+
     // 1. Time filter
     const pubTime = new Date(group.publishedAt).getTime();
     const now = Date.now();
@@ -220,9 +308,11 @@ export default function App() {
 
     if (hoursDiff > maxHours) return false;
 
-    // 2. Scope filter
-    if (selectedScope === 'ciudad' && group.scope !== 'ciudad') return false;
-    if (selectedScope === 'provincia' && group.scope !== 'provincia') return false;
+    // 2. Scope filter (within Alicante mode)
+    if (geoFilterMode === 'alicante_provincia') {
+      if (selectedScope === 'ciudad' && group.scope !== 'ciudad') return false;
+      if (selectedScope === 'provincia' && group.scope !== 'provincia') return false;
+    }
 
     // 3. Category filter
     if (selectedCategory !== 'todas') {
@@ -249,7 +339,7 @@ export default function App() {
     if (searchQuery.trim()) {
       const q = searchQuery.toLowerCase().trim();
       const matchTitle = group.mainTitle.toLowerCase().includes(q);
-      const matchSummary = group.summary.toLowerCase().includes(q);
+      const matchSummary = (group.summary || '').toLowerCase().includes(q);
       const matchCategory = group.category.toLowerCase().includes(q);
       const matchMunicipality = group.municipality?.toLowerCase().includes(q);
       const matchSource = group.sources.some((s) => s.source.toLowerCase().includes(q));
@@ -272,7 +362,7 @@ export default function App() {
       <DigitalClock theme={theme} />
 
       {/* Ticker Marquee Banner (Último Teletipo Animado - Justo debajo de Central Telegráfica de Noticias) */}
-      <TickerBanner newsGroups={groupedNews} theme={theme} />
+      <TickerBanner newsGroups={filteredGroupedNews} theme={theme} />
 
       {/* 2. Radios Banner */}
       <RadioBanner theme={theme} />
@@ -287,6 +377,7 @@ export default function App() {
         theme={theme}
         sectionOrder={sectionOrder}
         hasNewItems={hasNewItemsState}
+        temporalIncidentsCount={temporalIncidentsCount}
         onRefresh={fetchNews}
         onTogglePause={() => setIsPaused(!isPaused)}
         onToggleSound={() => setSoundEnabled(!soundEnabled)}
@@ -310,11 +401,13 @@ export default function App() {
         selectedCategory={selectedCategory}
         selectedTimeRange={selectedTimeRange}
         selectedScope={selectedScope}
+        geoFilterMode={geoFilterMode}
         onlyOfficialSources={onlyOfficialSources}
         theme={theme}
         onSelectCategory={setSelectedCategory}
         onSelectTimeRange={setSelectedTimeRange}
         onSelectScope={setSelectedScope}
+        onSelectGeoFilterMode={setGeoFilterMode}
         onToggleOnlyOfficialSources={() => setOnlyOfficialSources(!onlyOfficialSources)}
       />
 
@@ -332,12 +425,22 @@ export default function App() {
           {/* Highlighted News First */}
           <HighlightedNews highlightedItems={highlightedNews} theme={theme} />
           {/* Teletype List Second */}
-          <TeletypeList newsGroups={filteredGroupedNews} theme={theme} />
+          <TeletypeList
+            newsGroups={filteredGroupedNews}
+            theme={theme}
+            geoFilterMode={geoFilterMode}
+            onSelectGeoFilterMode={setGeoFilterMode}
+          />
         </>
       ) : (
         <>
           {/* Teletype List First */}
-          <TeletypeList newsGroups={filteredGroupedNews} theme={theme} />
+          <TeletypeList
+            newsGroups={filteredGroupedNews}
+            theme={theme}
+            geoFilterMode={geoFilterMode}
+            onSelectGeoFilterMode={setGeoFilterMode}
+          />
           {/* Highlighted News Second */}
           <HighlightedNews highlightedItems={highlightedNews} theme={theme} />
         </>
@@ -375,7 +478,15 @@ export default function App() {
       {showSourcesModal && (
         <SourcesModal
           sources={sources}
+          sourceStatuses={sourceStatuses}
+          temporalIncidentsCount={temporalIncidentsCount}
+          averageLatencyMs={averageLatencyMs}
+          lastSourcesCheck={lastSourcesCheck}
+          theme={theme}
           onToggleSource={handleToggleSource}
+          onToggleAllSources={handleToggleAllSources}
+          onSelectOnlyOfficial={handleSelectOnlyOfficial}
+          onRefreshSources={fetchNews}
           onClose={() => setShowSourcesModal(false)}
         />
       )}
@@ -390,4 +501,3 @@ export default function App() {
     </div>
   );
 }
-
